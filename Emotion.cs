@@ -50,6 +50,10 @@ namespace EmotionML
         /// </summary>
         public List<string> reference = new List<string>();
 
+        public string expressedThrough = null;
+        public string info = null;
+
+
         public Emotion()
         {
   //          initNamespaceHandling();

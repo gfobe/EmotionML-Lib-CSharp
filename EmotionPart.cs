@@ -16,8 +16,10 @@ namespace EmotionML
 
 
         public string name;
-        public float? value = null;
         public float? confidence = null;
+        //TODO: dimension MUST have a value or a trace, the other MAY
+        public float? value = null;
+        public EmotionTrace? trace = null;
 
         public EmotionPart(string name)
         {

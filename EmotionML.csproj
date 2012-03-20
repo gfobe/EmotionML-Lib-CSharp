@@ -48,6 +48,8 @@
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionmlDocument.cs" />
     <Compile Include="EmotionPart.cs" />
+    <Compile Include="EmotionReference.cs" />
+    <Compile Include="EmotionTrace.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
