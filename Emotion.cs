@@ -5,41 +5,44 @@ using System.Xml;
 
 namespace EmotionML
 {
+    //FIXME: bei W3C nachfragen: Attribut time-ref-anchor-point hat default bei start, aber start selbst hat kein default und kann angegeben werden
     public class Emotion
     {
-        /// <summary>
-        /// set of emotion categories of current emotion annotation
-        /// </summary>
-        public Uri categorySet = null;
-        /// <summary>
-        /// set of emotion dimensions of current emotion annotation
-        /// </summary>
-        public Uri dimensionSet = null;
-        /// <summary>
-        /// set of emotion appraisals of current emotion annotation
-        /// </summary>
-        public Uri appraisalSet = null;
-        /// <summary>
-        /// set of emotion action tendencies of current emotion annotation
-        /// </summary>
-        public Uri actionTendencySet = null;
+        // defined entries for attribute expressed-throught in EmotionML, but also other are possible
+        const string EXPRESSED_THROUGHT_GAZE = "gaze";
+        const string EXPRESSED_THROUGHT_FACE = "face";
+        const string EXPRESSED_THROUGHT_HEAD = "head";
+        const string EXPRESSED_THROUGHT_TORSO = "torso";
+        const string EXPRESSED_THROUGHT_GESTURE = "gesture";
+        const string EXPRESSED_THROUGHT_LEG = "leg";
+        const string EXPRESSED_THROUGHT_VOICE = "voice";
+        const string EXPRESSED_THROUGHT_TEXT = "text";
+        const string EXPRESSED_THROUGHT_LOCOMOTION = "locomotion";
+        const string EXPRESSED_THROUGHT_POSTURE = "posture";
+        const string EXPRESSED_THROUGHT_PHYSIOLOGY = "physiology";
+        const string EXPRESSED_THROUGHT_CAMERA = "camera";
+        const string EXPRESSED_THROUGHT_MICROPHONE = "microphone";
 
         /// <summary>
         /// emotions categories in current emotion annotation
         /// </summary>
-        public List<EmotionCategory> category = new List<EmotionCategory>();
+        //public List<EmotionCategory> category = new List<EmotionCategory>();
+        public EmotionSet<EmotionCategory> category = new EmotionSet<EmotionCategory>(new Uri(EmotionCategory.CATEGORY_BIG6));
         /// <summary>
         /// emotions dimensions in current emotion annotation
         /// </summary>
-        public List<EmotionDimension> dimension = new List<EmotionDimension>();
+        //public List<EmotionDimension> dimension = new List<EmotionDimension>();
+        public EmotionSet<EmotionDimension> dimension = new EmotionSet<EmotionDimension>(new Uri(EmotionDimension.DIMENSION_PAD));
         /// <summary>
         /// emotions appraisals in current emotion annotation
         /// </summary>
-        public List<EmotionAppraisal> appraisal = new List<EmotionAppraisal>();
+        //public List<EmotionAppraisal> appraisal = new List<EmotionAppraisal>();
+        public EmotionSet<EmotionAppraisal> appraisal = new EmotionSet<EmotionAppraisal>(new Uri(EmotionAppraisal.APPRAISAL_SCHERER));
         /// <summary>
         /// emotions action tendencies in current emotion annotation
         /// </summary>
-        public List<EmotionActionTendency> actionTendency = new List<EmotionActionTendency>();
+        //public List<EmotionActionTendency> actionTendency = new List<EmotionActionTendency>();
+        EmotionSet<EmotionActionTendency> actionTendency = new EmotionSet<EmotionActionTendency>(new Uri(EmotionActionTendency.ACTIONTENDENCY_FRIJDA));
 
         /// <summary>
         /// unique id of emotion annotation
@@ -48,10 +51,53 @@ namespace EmotionML
         /// <summary>
         /// references of emotion annotation
         /// </summary>
-        public List<string> reference = new List<string>();
+        public List<string> reference = new List<string>();  //FIXME: mehrzahl
 
+        /// <summary>
+        /// modality throught which an emotion is produced
+        /// space delimeted set of values
+        /// </summary>
         public string expressedThrough = null;
-        public string info = null;
+
+        /// <summary>
+        /// info block with forther other informations about the emotion
+        /// </summary>
+        public EmotionInfo info = null;
+
+        //### timestamps ###
+
+        //FIXME: die ganzen Zeitannotationen mit in ein Objekt rein?
+        /// <summary>
+        /// denote the starting time of emotion
+        /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
+        /// </summary>
+        public int? start = null; //TODO:validate 
+        /// <summary>
+        /// denote the ending time of emotion
+        /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
+        /// </summary>
+        public int? end = null; //TODO:validate 
+        //Yes, I know; it's bad that it isn't a xsd:dateTime, but it has to work with EMMA //TODO: prüfen und URL dran
+        /// <summary>
+        /// duration of the event in milliseconds (xsd:nonNegativeInteger)
+        /// </summary>
+        public int? duration = null;  //TODO:validate 
+
+        // ### relative times ###
+        /// <summary>
+        /// indicating the URI used to anchor the relative timestamp (xsd:anyURI)
+        /// </summary>
+        public Uri timeRefUri = null;
+        /// <summary>
+        /// indicates from wich time the relative time is measured (start=default or end)
+        /// </summary>
+        public int? timeRefAnchorPoint = null; //TODO: default start
+        /// <summary>
+        /// offset in milliseconds for the start of input from the anchor point
+        /// </summary>
+        public int? offsetToStart = null; //TODO: default 0, Abhängig von timeRefUri und timeRefAnchorPoint
+
+
 
 
         public Emotion()
@@ -88,6 +134,9 @@ namespace EmotionML
         /// </summary>
         /// <param name="emotionNode"></param>
         protected void parseEmotionML(XmlNode emotionNode) {
+            //TODO: um die neuen Attribute erweitern
+            //TODO: Exceptions anlegen und werfen
+            //TODO: eigene EmotionML-Parser-Klasse?
             //init namespacemanager
             XmlNamespaceManager nsManager = new XmlNamespaceManager(emotionNode.OwnerDocument.NameTable);
             nsManager.AddNamespace("emo", EmotionML.NAMESPACE);
@@ -100,25 +149,27 @@ namespace EmotionML
             }
             if (emotionNode.Attributes["category-set"] != null)
             {
-                categorySet = new Uri(emotionNode.Attributes["category-set"].InnerText);
+                category.setEmotionsetUri(
+                    new Uri(emotionNode.Attributes["category-set"].InnerText)
+                );
             }
             if (emotionNode.Attributes["dimension-set"] != null)
             {
-                dimensionSet = new Uri(emotionNode.Attributes["dimension-set"].InnerText);
+                dimension.setEmotionsetUri(
+                    new Uri(emotionNode.Attributes["dimension-set"].InnerText)
+                );
             }
             if (emotionNode.Attributes["appraisal-set"] != null)
             {
-                appraisalSet = new Uri(emotionNode.Attributes["appraisal-set"].InnerText);
+                appraisal.setEmotionsetUri(
+                    new Uri(emotionNode.Attributes["appraisal-set"].InnerText)
+                );
             }
             if (emotionNode.Attributes["action-tendency-set"] != null)
             {
-                actionTendencySet = new Uri(emotionNode.Attributes["action-tendency-set"].InnerText);
-            }
-            
-            //there must be at least one set defined
-            if (categorySet == null && dimensionSet == null && appraisalSet == null && actionTendencySet == null)
-            {
-                throw new Exception("At least one EmotionSet must be defined.");
+                actionTendency.setEmotionsetUri(
+                    new Uri(emotionNode.Attributes["action-tendency-set"].InnerText)
+                );
             }
             
             //add categories
@@ -200,6 +251,14 @@ namespace EmotionML
                 addActionTendency(new EmotionActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
             }
 
+            //there must be at least one set defined
+            if (category.getEmotionsetUri() == null && dimension.getEmotionsetUri() == null
+                && appraisal.getEmotionsetUri() == null && actionTendency.getEmotionsetUri() == null)
+            {
+                //TODO: Prüfen, ob wirklich eins angegeben werden muss oder nur, wenn Emotionen da sind
+                throw new Exception("At least one EmotionSet must be defined.");
+            }
+
             //add references
             XmlNodeList references = emotionNode.SelectNodes("emo:reference", nsManager);
             foreach (XmlNode refs in references) {
@@ -212,17 +271,17 @@ namespace EmotionML
         /// </summary>
         public void setDefaultSets()
         {
-            categorySet = new Uri(EmotionML.CATEGORY_BIG6);
-            dimensionSet = new Uri(EmotionML.DIMENSION_PAD);
-            appraisalSet = new Uri(EmotionML.APPRAISAL_SCHERER);
-            actionTendencySet = new Uri(EmotionML.ACTIONTENDENCY_FRIJDA);
+            category.setEmotionsetUri( new Uri(EmotionCategory.CATEGORY_BIG6 ));
+            dimension.setEmotionsetUri( new Uri(EmotionDimension.DIMENSION_PAD ));
+            appraisal.setEmotionsetUri( new Uri(EmotionAppraisal.APPRAISAL_SCHERER ));
+            actionTendency.setEmotionsetUri( new Uri(EmotionActionTendency.ACTIONTENDENCY_FRIJDA ));
         }
 
 
 
 
         //TODO: wozu wenn public?
-        public void setCategorySet(string categorySetUri)
+       /* public void setCategorySet(string categorySetUri)
         {
             categorySet = new Uri(categorySetUri);
         }
@@ -256,7 +315,7 @@ namespace EmotionML
         public void setActionTendencySet(Uri actionTendencySetUri)
         {
             actionTendencySet = actionTendencySetUri;
-        }
+        }*/
 
         /// <summary>
         /// modify the values of a category, adds it if not exists
@@ -513,7 +572,7 @@ namespace EmotionML
             //loop trought <category>
             if (category.Count > 0)
             {
-                emotion.SetAttribute("category-set", categorySet.AbsoluteUri);
+                emotion.SetAttribute("category-set", category.getEmotionsetUri().AbsoluteUri);
                 foreach (EmotionCategory cat in category) {
                     XmlElement catNode = emotionXml.CreateElement("category");
                     catNode.SetAttribute("name", cat.name);
@@ -532,7 +591,7 @@ namespace EmotionML
             //loop trought <dimension>
             if (dimension.Count > 0)
             {
-                emotion.SetAttribute("dimension-set", dimensionSet.AbsoluteUri);
+                emotion.SetAttribute("dimension-set", dimension.getEmotionsetUri().AbsoluteUri);
                 dimension.ForEach(delegate(EmotionDimension dim)
                 {
                     XmlElement dimNode = emotionXml.CreateElement("dimension");
@@ -552,7 +611,7 @@ namespace EmotionML
             //loop trought <appraisal>
             if (appraisal.Count > 0)
             {
-                emotion.SetAttribute("appraisal-set", appraisalSet.AbsoluteUri);
+                emotion.SetAttribute("appraisal-set", appraisal.getEmotionsetUri().AbsoluteUri);
                 appraisal.ForEach(delegate(EmotionAppraisal apr)
                 {
                     XmlElement aprNode = emotionXml.CreateElement("appraisal");
@@ -572,7 +631,7 @@ namespace EmotionML
             //loop trought <action-tendency>
             if (actionTendency.Count > 0)
             {
-                emotion.SetAttribute("action-tendency-set", actionTendencySet.AbsoluteUri);
+                emotion.SetAttribute("action-tendency-set", actionTendency.getEmotionsetUri().AbsoluteUri);
                 actionTendency.ForEach(delegate(EmotionActionTendency act)
                 {
                     XmlElement actNode = emotionXml.CreateElement("action-tendency");

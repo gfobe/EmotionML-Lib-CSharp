@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace EmotionML
 {
-    public class EmotionPart
+    public abstract class EmotionPart
     {
         /// <summary>
         /// possible parts of an emotion annotation
@@ -19,13 +19,14 @@ namespace EmotionML
         public float? confidence = null;
         //TODO: dimension MUST have a value or a trace, the other MAY
         public float? value = null;
-        public EmotionTrace? trace = null;
+        public EmotionTrace trace = null;
 
         public EmotionPart(string name)
         {
             this.name = name;
         }
 
+        //OPTIMIZE: shorter with :this(name)
         public EmotionPart(string name, float? value)
         {
             this.name = name;

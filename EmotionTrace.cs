@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 
 namespace EmotionML
-{   //TODO: Nachfragen, ob <trace freq=""> nun int oder string ist. Je nachdem die Beschreibung ändern lassen.
-    class EmotionTrace
+{   //TODO: Nachfragen bei W3C, ob <trace freq=""> nun int oder string ist. Je nachdem die Beschreibung ändern lassen.
+    public class EmotionTrace
     {
         /// <summary>
         /// sampling freuquency in Hz
@@ -13,6 +13,7 @@ namespace EmotionML
         protected string frequenz = "";
         /// <summary>
         /// numeric scale values from interval [0;1] (changes over time)
+        /// space seperated
         /// </summary>
         protected string samples = "";
 
@@ -60,6 +61,12 @@ namespace EmotionML
         public string getSamples()
         {
             return samples;
+        }
+
+        public string toXml()
+        {
+            //FIXME: TODO
+            return "";
         }
     }
 }
