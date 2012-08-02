@@ -44,9 +44,10 @@
     <Compile Include="EmotionActionTendency.cs" />
     <Compile Include="EmotionAppraisal.cs" />
     <Compile Include="EmotionCategory.cs" />
-    <Compile Include="EmotionCategorySet.cs" />
     <Compile Include="EmotionDimension.cs" />
+    <Compile Include="EmotionException.cs" />
     <Compile Include="EmotionInfo.cs" />
+    <Compile Include="EmotionList.cs" />
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionmlDocument.cs" />
     <Compile Include="EmotionPart.cs" />
