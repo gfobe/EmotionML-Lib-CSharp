@@ -26,6 +26,20 @@ namespace EmotionML
         EmotionSet<EmotionActionTendency> actionTendency = null;
 
         /// <summary>
+        /// emotion vacabularies
+        /// </summary>
+        protected List<EmotionVocabulary> vocabularies = null;
+
+        /// <summary>
+        /// adds a emotion vocabulary to list
+        /// </summary>
+        /// <param name="vocabulary">defined emotion vocabulary</param>
+        public void addVocabulary(EmotionVocabulary vocabulary)
+        {
+            this.vocabularies.Add(vocabulary);
+        }
+
+        /// <summary>
         /// creates a DOM-list of emotions in list
         /// </summary>
         /// <returns>DOM of emotionml notation</returns>
@@ -50,6 +64,13 @@ namespace EmotionML
             if (this.actionTendency != null)
             {
                 emotionml.SetAttribute("action-tendency-set", this.actionTendency.getEmotionsetUri().AbsoluteUri);
+            }
+
+            //add vocabularies to list
+            foreach (EmotionVocabulary vocabulary in this.vocabularies)
+            {
+                XmlDocument vocabularyDom = vocabulary.ToDom();
+                emotionml.AppendChild(vocabularyDom);
             }
 
             //add emotions to list

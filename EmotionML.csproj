@@ -54,6 +54,7 @@
     <Compile Include="EmotionReference.cs" />
     <Compile Include="EmotionSet.cs" />
     <Compile Include="EmotionTrace.cs" />
+    <Compile Include="EmotionVocabulary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
