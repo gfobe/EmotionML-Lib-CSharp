@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EmotionML
+namespace Vsr.Hawaii.EmotionmlLib
 {
     [Serializable()]
     public class EmotionException : System.Exception

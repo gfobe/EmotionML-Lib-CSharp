@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EmotionML
+namespace Vsr.Hawaii.EmotionmlLib
 {   //TODO: Nachfragen bei W3C, ob <trace freq=""> nun int oder string ist. Je nachdem die Beschreibung ändern lassen.
     public class EmotionTrace
     {

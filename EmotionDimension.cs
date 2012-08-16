@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EmotionML
+namespace Vsr.Hawaii.EmotionmlLib
 {
     public class EmotionDimension : EmotionPart
     {
