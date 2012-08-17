@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    public class EmotionCategory : EmotionPart
+    public class Category : Part
     {
         /// <summary>
         /// Vocabularies for categories of EmotionML 1.0 out of http://www.w3.org/TR/emotion-voc/xml
@@ -15,13 +15,13 @@ namespace Vsr.Hawaii.EmotionmlLib
         public const string CATEGORY_FSRE = "http://www.w3.org/TR/emotion-voc/xml#fsre-categories";
         public const string CATEGORY_FRIJDA = "http://www.w3.org/TR/emotion-voc/xml#frijda-categories";
 
-        public EmotionCategory(string name) : base(name)
+        public Category(string name) : base(name)
         {}
 
-        public EmotionCategory(string name, float? value) : base(name, value)
+        public Category(string name, float? value) : base(name, value)
         {}
 
-        public EmotionCategory(string name, float? value, float? confidence) : base (name, value, confidence)
+        public Category(string name, float? value, float? confidence) : base (name, value, confidence)
         {}
     }
 }

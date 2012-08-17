@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    public abstract class EmotionPart
+    public abstract class Part
     {
         /// <summary>
         /// possible parts of an emotion annotation
@@ -19,21 +19,21 @@ namespace Vsr.Hawaii.EmotionmlLib
         public float? confidence = null;
         //TODO: dimension MUST have a value or a trace, the other MAY
         public float? value = null;
-        public EmotionTrace trace = null;
+        public Trace trace = null;
 
-        public EmotionPart(string name)
+        public Part(string name)
         {
             this.name = name;
         }
 
         //OPTIMIZE: shorter with :this(name)
-        public EmotionPart(string name, float? value)
+        public Part(string name, float? value)
         {
             this.name = name;
             this.value = value;
         }
 
-        public EmotionPart(string name, float? value, float? confidence)
+        public Part(string name, float? value, float? confidence)
         {
             this.name = name;
             this.value = value;

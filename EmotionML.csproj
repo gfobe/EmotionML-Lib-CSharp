@@ -41,20 +41,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Emotion.cs" />
-    <Compile Include="EmotionActionTendency.cs" />
-    <Compile Include="EmotionAppraisal.cs" />
-    <Compile Include="EmotionCategory.cs" />
-    <Compile Include="EmotionDimension.cs" />
-    <Compile Include="EmotionException.cs" />
-    <Compile Include="EmotionInfo.cs" />
+    <Compile Include="ActionTendency.cs" />
+    <Compile Include="Appraisal.cs" />
+    <Compile Include="Category.cs" />
+    <Compile Include="Dimension.cs" />
+    <Compile Include="EmotionMLException.cs" />
+    <Compile Include="Info.cs" />
     <Compile Include="EmotionList.cs" />
     <Compile Include="EmotionML.cs" />
-    <Compile Include="EmotionmlDocument.cs" />
-    <Compile Include="EmotionPart.cs" />
-    <Compile Include="EmotionReference.cs" />
-    <Compile Include="EmotionSet.cs" />
-    <Compile Include="EmotionTrace.cs" />
-    <Compile Include="EmotionVocabulary.cs" />
+    <Compile Include="EmotionMLDocument.cs" />
+    <Compile Include="Part.cs" />
+    <Compile Include="Reference.cs" />
+    <Compile Include="Set.cs" />
+    <Compile Include="Trace.cs" />
+    <Compile Include="Vocabulary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

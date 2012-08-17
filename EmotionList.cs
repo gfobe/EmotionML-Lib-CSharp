@@ -11,30 +11,30 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// emotions categories in current emotion annotation
         /// </summary>
-        public EmotionSet<EmotionCategory> category = null;
+        public Set<Category> category = null;
         /// <summary>
         /// emotions dimensions in current emotion annotation
         /// </summary>
-        public EmotionSet<EmotionDimension> dimension = null;
+        public Set<Dimension> dimension = null;
         /// <summary>
         /// emotions appraisals in current emotion annotation
         /// </summary>
-        public EmotionSet<EmotionAppraisal> appraisal = null;
+        public Set<Appraisal> appraisal = null;
         /// <summary>
         /// emotions action tendencies in current emotion annotation
         /// </summary>
-        EmotionSet<EmotionActionTendency> actionTendency = null;
+        public Set<ActionTendency> actionTendency = null;
 
         /// <summary>
         /// emotion vacabularies
         /// </summary>
-        protected List<EmotionVocabulary> vocabularies = null;
+        protected List<Vocabulary> vocabularies = null;
 
         /// <summary>
         /// adds a emotion vocabulary to list
         /// </summary>
         /// <param name="vocabulary">defined emotion vocabulary</param>
-        public void addVocabulary(EmotionVocabulary vocabulary)
+        public void addVocabulary(Vocabulary vocabulary)
         {
             this.vocabularies.Add(vocabulary);
         }
@@ -51,23 +51,23 @@ namespace Vsr.Hawaii.EmotionmlLib
 
             if (this.category != null)
             {
-                emotionml.SetAttribute("category-set", this.category.getEmotionsetUri().AbsoluteUri);
+                emotionml.SetAttribute("category-set", this.category.Uri.AbsoluteUri);
             }
             if (this.dimension != null)
             {
-                emotionml.SetAttribute("dimension-set", this.dimension.getEmotionsetUri().AbsoluteUri);
+                emotionml.SetAttribute("dimension-set", this.dimension.Uri.AbsoluteUri);
             }
             if (this.appraisal != null)
             {
-                emotionml.SetAttribute("appraisal-set", this.appraisal.getEmotionsetUri().AbsoluteUri);
+                emotionml.SetAttribute("appraisal-set", this.appraisal.Uri.AbsoluteUri);
             }
             if (this.actionTendency != null)
             {
-                emotionml.SetAttribute("action-tendency-set", this.actionTendency.getEmotionsetUri().AbsoluteUri);
+                emotionml.SetAttribute("action-tendency-set", this.actionTendency.Uri.AbsoluteUri);
             }
 
             //add vocabularies to list
-            foreach (EmotionVocabulary vocabulary in this.vocabularies)
+            foreach (Vocabulary vocabulary in this.vocabularies)
             {
                 XmlDocument vocabularyDom = vocabulary.ToDom();
                 emotionml.AppendChild(vocabularyDom);

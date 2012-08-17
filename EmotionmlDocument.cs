@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    class EmotionmlDocument
+    class EmotionMLDocument
     {
         List<Emotion> emotions = new List<Emotion>();
     }

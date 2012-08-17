@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    public class EmotionAppraisal : EmotionPart
+    public class Appraisal : Part
     {
         /// <summary>
         /// Vocabularies for appraisals of EmotionML 1.0 out of http://www.w3.org/TR/emotion-voc/xml
@@ -13,13 +13,13 @@ namespace Vsr.Hawaii.EmotionmlLib
         public const string APPRAISAL_SCHERER = "http://www.w3.org/TR/emotion-voc/xml#scherer-appraisals";
         public const string APPRAISAL_EMA = "http://www.w3.org/TR/emotion-voc/xml#ema-appraisals";
 
-        public EmotionAppraisal(string name) : base(name)
+        public Appraisal(string name) : base(name)
         {}
 
-        public EmotionAppraisal(string name, float? value) : base(name, value)
+        public Appraisal(string name, float? value) : base(name, value)
         {}
 
-        public EmotionAppraisal(string name, float? value, float? confidence) : base (name, value, confidence)
+        public Appraisal(string name, float? value, float? confidence) : base (name, value, confidence)
         {}
     }
 }
