@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-namespace EmotionML
+namespace Vsr.Hawaii.EmotionmlLib
 {
     //FIXME: bei W3C nachfragen: Attribut time-ref-anchor-point hat default bei start, aber start selbst hat kein default und kann angegeben werden
     public class Emotion
@@ -27,22 +27,22 @@ namespace EmotionML
         /// emotions categories in current emotion annotation
         /// </summary>
         //public List<EmotionCategory> category = new List<EmotionCategory>();
-        public EmotionSet<EmotionCategory> category = new EmotionSet<EmotionCategory>(new Uri(EmotionCategory.CATEGORY_BIG6));
+        public Set<Category> category = new Set<Category>();
         /// <summary>
         /// emotions dimensions in current emotion annotation
         /// </summary>
         //public List<EmotionDimension> dimension = new List<EmotionDimension>();
-        public EmotionSet<EmotionDimension> dimension = new EmotionSet<EmotionDimension>(new Uri(EmotionDimension.DIMENSION_PAD));
+        public Set<Dimension> dimension = new Set<Dimension>();
         /// <summary>
         /// emotions appraisals in current emotion annotation
         /// </summary>
         //public List<EmotionAppraisal> appraisal = new List<EmotionAppraisal>();
-        public EmotionSet<EmotionAppraisal> appraisal = new EmotionSet<EmotionAppraisal>(new Uri(EmotionAppraisal.APPRAISAL_SCHERER));
+        public Set<Appraisal> appraisal = new Set<Appraisal>();
         /// <summary>
         /// emotions action tendencies in current emotion annotation
         /// </summary>
         //public List<EmotionActionTendency> actionTendency = new List<EmotionActionTendency>();
-        EmotionSet<EmotionActionTendency> actionTendency = new EmotionSet<EmotionActionTendency>(new Uri(EmotionActionTendency.ACTIONTENDENCY_FRIJDA));
+        Set<ActionTendency> actionTendency = new Set<ActionTendency>();
 
         /// <summary>
         /// unique id of emotion annotation
@@ -51,7 +51,7 @@ namespace EmotionML
         /// <summary>
         /// references of emotion annotation
         /// </summary>
-        public List<string> reference = new List<string>();  //FIXME: mehrzahl
+        public List<string> references = new List<string>();
 
         /// <summary>
         /// modality throught which an emotion is produced
@@ -62,16 +62,15 @@ namespace EmotionML
         /// <summary>
         /// info block with forther other informations about the emotion
         /// </summary>
-        public EmotionInfo info = null;
+        public Info info = null;
 
         //### timestamps ###
 
-        //FIXME: die ganzen Zeitannotationen mit in ein Objekt rein?
         /// <summary>
         /// denote the starting time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
         /// </summary>
-        public int? start = null; //TODO:validate 
+        public int? start = null; //TODO:validate //TODO: get/set
         /// <summary>
         /// denote the ending time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
@@ -97,6 +96,7 @@ namespace EmotionML
         /// </summary>
         public int? offsetToStart = null; //TODO: default 0, Abhängig von timeRefUri und timeRefAnchorPoint
 
+        //TODO: <trace>
 
 
 
@@ -134,42 +134,48 @@ namespace EmotionML
         /// </summary>
         /// <param name="emotionNode"></param>
         protected void parseEmotionML(XmlNode emotionNode) {
-            //TODO: um die neuen Attribute erweitern
-            //TODO: Exceptions anlegen und werfen
-            //TODO: eigene EmotionML-Parser-Klasse?
             //init namespacemanager
             XmlNamespaceManager nsManager = new XmlNamespaceManager(emotionNode.OwnerDocument.NameTable);
             nsManager.AddNamespace("emo", EmotionML.NAMESPACE);
-
 
             //add general stuff
             if (emotionNode.Attributes["id"] != null)
             {
                 id = emotionNode.Attributes["id"].InnerText;
             }
+
+            //references
+            XmlNodeList referenceNodes = emotionNode.SelectNodes("emo:reference", nsManager);
+            foreach (XmlNode refs in referenceNodes)
+            {
+                references.Add(refs.ToString());
+            }
+
+            //infoblock
+            info.Content = (XmlElement)emotionNode.SelectSingleNode("./info");
+            //TODO: Exception wenn nicht vorhanden oder null?
+            //expressedThrough
+            if (emotionNode.Attributes["expressedThrough"] != null)
+            {
+                expressedThrough = emotionNode.Attributes["expressedThrough"].Value;
+            }
+
+            //add emotion sets
             if (emotionNode.Attributes["category-set"] != null)
             {
-                category.setEmotionsetUri(
-                    new Uri(emotionNode.Attributes["category-set"].InnerText)
-                );
+                category.Uri = new Uri(emotionNode.Attributes["category-set"].InnerText);
             }
             if (emotionNode.Attributes["dimension-set"] != null)
             {
-                dimension.setEmotionsetUri(
-                    new Uri(emotionNode.Attributes["dimension-set"].InnerText)
-                );
+                dimension.Uri = new Uri(emotionNode.Attributes["dimension-set"].InnerText);
             }
             if (emotionNode.Attributes["appraisal-set"] != null)
             {
-                appraisal.setEmotionsetUri(
-                    new Uri(emotionNode.Attributes["appraisal-set"].InnerText)
-                );
+                appraisal.Uri = new Uri(emotionNode.Attributes["appraisal-set"].InnerText);
             }
             if (emotionNode.Attributes["action-tendency-set"] != null)
             {
-                actionTendency.setEmotionsetUri(
-                    new Uri(emotionNode.Attributes["action-tendency-set"].InnerText)
-                );
+                actionTendency.Uri = new Uri(emotionNode.Attributes["action-tendency-set"].InnerText);
             }
             
             //add categories
@@ -189,7 +195,7 @@ namespace EmotionML
                     categoryConfidence = float.Parse(cat.Attributes["confidence"].InnerText);
                 }
 
-                addCategory(new EmotionCategory(categoryName, categoryValue, categoryConfidence));
+                addCategory(new Category(categoryName, categoryValue, categoryConfidence));
             }
 
             //add dimensions
@@ -209,7 +215,7 @@ namespace EmotionML
                     dimensionConfidence = float.Parse(dim.Attributes["confidence"].InnerText);
                 }
 
-                addDimension(new EmotionDimension(dimensionName, dimensionValue, dimensionConfidence));
+                addDimension(new Dimension(dimensionName, dimensionValue, dimensionConfidence));
             }
 
             //add appraisals
@@ -229,7 +235,7 @@ namespace EmotionML
                     appraisalConfidence = float.Parse(apr.Attributes["confidence"].InnerText);
                 }
 
-                addAppraisal(new EmotionAppraisal(appraisalName, appraisalValue, appraisalConfidence));
+                addAppraisal(new Appraisal(appraisalName, appraisalValue, appraisalConfidence));
             }
 
             //add action tendencies
@@ -248,22 +254,37 @@ namespace EmotionML
                     actionTendencyConfidence = float.Parse(act.Attributes["confidence"].InnerText);
                 }
 
-                addActionTendency(new EmotionActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
+                addActionTendency(new ActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
             }
 
             //there must be at least one set defined
-            if (category.getEmotionsetUri() == null && dimension.getEmotionsetUri() == null
-                && appraisal.getEmotionsetUri() == null && actionTendency.getEmotionsetUri() == null)
+            if (category.Uri == null && dimension.Uri == null && appraisal.Uri == null && actionTendency.Uri == null)
             {
                 //TODO: Prüfen, ob wirklich eins angegeben werden muss oder nur, wenn Emotionen da sind
-                throw new Exception("At least one EmotionSet must be defined.");
+                //TODO: sagen welches Set fehlt. Wenn ich eine Category habe, nutzt ein DimensionSet nicht viel
+                throw new EmotionMLException("At least one EmotionSet must be defined.");
             }
 
-            //add references
-            XmlNodeList references = emotionNode.SelectNodes("emo:reference", nsManager);
-            foreach (XmlNode refs in references) {
-                reference.Add(refs.ToString());
+            //add time ralted stuff
+            if(emotionNode.Attributes["start"] != null) {
+                start = Convert.ToInt32(emotionNode.Attributes["start"].Value);
             }
+            if(emotionNode.Attributes["end"] != null) {
+                this.end = Convert.ToInt32(emotionNode.Attributes["end"].Value);
+            }
+            if(emotionNode.Attributes["duration"] != null) {
+                duration = Convert.ToInt32(emotionNode.Attributes["end"].Value);
+            }
+            if(emotionNode.Attributes["timeRefUri"] != null) { //TODO groß/kleinschreibung
+                timeRefUri = new Uri(emotionNode.Attributes["timeRefUri"].Value);
+            }
+            if(emotionNode.Attributes["timeRefAnchorPoint"] != null) {
+                timeRefAnchorPoint = Convert.ToInt32(emotionNode.Attributes["timeRefAnchorPoint"].Value);
+            }
+            if(emotionNode.Attributes["offsetToStart"] != null) {
+                timeRefAnchorPoint = Convert.ToInt32(emotionNode.Attributes["offsetToStart"].Value);
+            }
+            //TODO: Abhängigkeiten prüfen
         }
 
         /// <summary>
@@ -271,12 +292,23 @@ namespace EmotionML
         /// </summary>
         public void setDefaultSets()
         {
-            category.setEmotionsetUri( new Uri(EmotionCategory.CATEGORY_BIG6 ));
-            dimension.setEmotionsetUri( new Uri(EmotionDimension.DIMENSION_PAD ));
-            appraisal.setEmotionsetUri( new Uri(EmotionAppraisal.APPRAISAL_SCHERER ));
-            actionTendency.setEmotionsetUri( new Uri(EmotionActionTendency.ACTIONTENDENCY_FRIJDA ));
+            category.Uri = new Uri(Category.CATEGORY_BIG6 );
+            dimension.Uri = new Uri(Dimension.DIMENSION_PAD );
+            appraisal.Uri = new Uri(Appraisal.APPRAISAL_SCHERER );
+            actionTendency.Uri = new Uri(ActionTendency.ACTIONTENDENCY_FRIJDA );
         }
 
+        /// <summary>
+        /// compares this emotion with another for equality
+        /// </summary>
+        /// <param name="emotion"></param>
+        /// <returns></returns>
+        public bool equalsEmotion(Emotion emotion)
+        {
+            //TODO: to emotions are equal?
+
+            return false;
+        }
 
 
 
@@ -321,9 +353,9 @@ namespace EmotionML
         /// modify the values of a category, adds it if not exists
         /// </summary>
         /// <param name="newCategory">the values to set the category to</param>
-        public void addCategory(EmotionCategory newCategory)
+        public void addCategory(Category newCategory)
         {
-            int foundOnIndex = category.FindIndex(delegate(EmotionCategory categoryToMatch)
+            int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
                 {
                     return categoryToMatch.name == newCategory.name;
                 });
@@ -346,7 +378,7 @@ namespace EmotionML
         /// <param name="categoryName">the name of the category to delete</param>
         /// <returns>deletion succeded</returns>
         public bool deleteCategory(string categoryName) {
-            int foundOnIndex = category.FindIndex(delegate(EmotionCategory categoryToMatch)
+            int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
             {
                 return categoryToMatch.name == categoryName;
             });
@@ -366,9 +398,9 @@ namespace EmotionML
         /// modify the values of a dimension, adds it if not exists
         /// </summary>
         /// <param name="newDimension">the values to set the dimension to</param>
-        public void addDimension(EmotionDimension newDimension)
+        public void addDimension(Dimension newDimension)
         {
-            int foundOnIndex = dimension.FindIndex(delegate(EmotionDimension dimensionToMatch)
+            int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
             {
                 return dimensionToMatch.name == newDimension.name;
             });
@@ -390,7 +422,7 @@ namespace EmotionML
         /// <returns>deletion succeded</returns>
         public bool deleteDimension(string dimensionName)
         {
-            int foundOnIndex = dimension.FindIndex(delegate(EmotionDimension dimensionToMatch)
+            int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
             {
                 return dimensionToMatch.name == dimensionName;
             });
@@ -410,9 +442,9 @@ namespace EmotionML
         /// modify the values of a appraisal, adds it if not exists
         /// </summary>
         /// <param name="newappraisal">the values to set the appraisal to</param>
-        public void addAppraisal(EmotionAppraisal newAppraisal)
+        public void addAppraisal(Appraisal newAppraisal)
         {
-            int foundOnIndex = appraisal.FindIndex(delegate(EmotionAppraisal appraisalToMatch)
+            int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
             {
                 return appraisalToMatch.name == newAppraisal.name;
             });
@@ -434,7 +466,7 @@ namespace EmotionML
         /// <returns>deletion succeded</returns>
         public bool deleteAppraisal(string appraisalName)
         {
-            int foundOnIndex = appraisal.FindIndex(delegate(EmotionAppraisal appraisalToMatch)
+            int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
             {
                 return appraisalToMatch.name == appraisalName;
             });
@@ -454,9 +486,9 @@ namespace EmotionML
         /// modify the values of a actionTendency, adds it if not exists
         /// </summary>
         /// <param name="newactionTendency">the values to set the actionTendency to</param>
-        public void addActionTendency(EmotionActionTendency newactionTendency)
+        public void addActionTendency(ActionTendency newactionTendency)
         {
-            int foundOnIndex = actionTendency.FindIndex(delegate(EmotionActionTendency actionTendencyToMatch)
+            int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
             {
                 return actionTendencyToMatch.name == newactionTendency.name;
             });
@@ -478,7 +510,7 @@ namespace EmotionML
         /// <returns>deletion succeded</returns>
         public bool deleteActionTendency(string actionTendencyName)
         {
-            int foundOnIndex = actionTendency.FindIndex(delegate(EmotionActionTendency actionTendencyToMatch)
+            int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
             {
                 return actionTendencyToMatch.name == actionTendencyName;
             });
@@ -508,7 +540,8 @@ namespace EmotionML
         /// <param name="newReference">the reference URL</param>
         public void addReference(string newReference)
         {
-            reference.Add(newReference);
+            //TODO: gegen Aufbau xml:ID prüfen
+            references.Add(newReference);
         }
 
         /// <summary>
@@ -518,13 +551,13 @@ namespace EmotionML
         /// <returns>deletion succeded</returns>
         public bool deleteReference(string referenceName)
         {
-            int foundOnIndex = reference.FindIndex(delegate(string referenceToMatch)
+            int foundOnIndex = references.FindIndex(delegate(string referenceToMatch)
             {                
                 return ( referenceToMatch.CompareTo(referenceName) == 0 );
             });
             if (foundOnIndex != -1)
             {
-                reference.RemoveAt(foundOnIndex);
+                references.RemoveAt(foundOnIndex);
                 return true;
             }
             else
@@ -539,26 +572,29 @@ namespace EmotionML
         /// <param name="mergingEmotion">emotion to integrate in this emotion</param>
         public void mergeWithEmotion(Emotion mergingEmotion)
         {
-            mergingEmotion.category.ForEach(delegate(EmotionCategory cat)
+            mergingEmotion.category.ForEach(delegate(Category cat)
             {
                 addCategory(cat);
             });
-            mergingEmotion.dimension.ForEach(delegate(EmotionDimension dim)
+            mergingEmotion.dimension.ForEach(delegate(Dimension dim)
             {
                 addDimension(dim);
             });
-            mergingEmotion.appraisal.ForEach(delegate(EmotionAppraisal apr)
+            mergingEmotion.appraisal.ForEach(delegate(Appraisal apr)
             {
                 addAppraisal(apr);
             });
-            mergingEmotion.actionTendency.ForEach(delegate(EmotionActionTendency act)
+            mergingEmotion.actionTendency.ForEach(delegate(ActionTendency act)
             {
                 addActionTendency(act);
             });
         }
 
-
-         public XmlDocument ToDom()
+        /// <summary>
+        /// creates a DOM of Emotion
+        /// </summary>
+        /// <returns>DOM of emotion definition</returns>
+        public XmlDocument ToDom()
         {
             XmlDocument emotionXml = new XmlDocument();
 
@@ -572,8 +608,8 @@ namespace EmotionML
             //loop trought <category>
             if (category.Count > 0)
             {
-                emotion.SetAttribute("category-set", category.getEmotionsetUri().AbsoluteUri);
-                foreach (EmotionCategory cat in category) {
+                emotion.SetAttribute("category-set", category.Uri.AbsoluteUri);
+                foreach (Category cat in category) {
                     XmlElement catNode = emotionXml.CreateElement("category");
                     catNode.SetAttribute("name", cat.name);
                     if (cat.value != null)
@@ -591,8 +627,8 @@ namespace EmotionML
             //loop trought <dimension>
             if (dimension.Count > 0)
             {
-                emotion.SetAttribute("dimension-set", dimension.getEmotionsetUri().AbsoluteUri);
-                dimension.ForEach(delegate(EmotionDimension dim)
+                emotion.SetAttribute("dimension-set", dimension.Uri.AbsoluteUri);
+                dimension.ForEach(delegate(Dimension dim)
                 {
                     XmlElement dimNode = emotionXml.CreateElement("dimension");
                     dimNode.SetAttribute("name", dim.name);
@@ -611,8 +647,8 @@ namespace EmotionML
             //loop trought <appraisal>
             if (appraisal.Count > 0)
             {
-                emotion.SetAttribute("appraisal-set", appraisal.getEmotionsetUri().AbsoluteUri);
-                appraisal.ForEach(delegate(EmotionAppraisal apr)
+                emotion.SetAttribute("appraisal-set", appraisal.Uri.AbsoluteUri);
+                appraisal.ForEach(delegate(Appraisal apr)
                 {
                     XmlElement aprNode = emotionXml.CreateElement("appraisal");
                     aprNode.SetAttribute("name", apr.name);
@@ -631,8 +667,8 @@ namespace EmotionML
             //loop trought <action-tendency>
             if (actionTendency.Count > 0)
             {
-                emotion.SetAttribute("action-tendency-set", actionTendency.getEmotionsetUri().AbsoluteUri);
-                actionTendency.ForEach(delegate(EmotionActionTendency act)
+                emotion.SetAttribute("action-tendency-set", actionTendency.Uri.AbsoluteUri);
+                actionTendency.ForEach(delegate(ActionTendency act)
                 {
                     XmlElement actNode = emotionXml.CreateElement("action-tendency");
                     actNode.SetAttribute("name", act.name);
@@ -649,7 +685,7 @@ namespace EmotionML
             }
 
             //loop trought <reference>
-            reference.ForEach(delegate(string referenceValue)
+            references.ForEach(delegate(string referenceValue)
             {
                 XmlElement referenceElement = emotionXml.CreateElement("reference");
                 referenceElement.SetAttribute("uri", referenceValue);
@@ -659,6 +695,10 @@ namespace EmotionML
             return emotionXml;
         }
 
+        /// <summary>
+        /// generates the XML EmotionML
+        /// </summary>
+        /// <returns>XML representation of emotion</returns>
         public string ToXml()
         {
             return ToDom().ToString();
