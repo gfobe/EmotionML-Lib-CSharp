@@ -13,7 +13,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         public const string NAMESPACE = "http://www.w3.org/2009/10/emotionml";
 
         /// <summary>
-        /// XML-praefix of EmotionML
+        /// recommented XML-prefix of EmotionML
         /// </summary>
         public const string PRAEFIX = "emo";
 
@@ -31,6 +31,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// Version of highest implemented EmotionML-Recommendation
         /// </summary>
         public const string VERSION = "1.0 - Candidate Recommendation 2012-05-10";
+
+        /// <summary>
+        /// Versions of EmotionML Recommendations
+        /// </summary>
+        public const string[] VERSIONS = new string[] { "1.0" };
 
         /// <summary>
         /// Version of this EmotionML-Library
