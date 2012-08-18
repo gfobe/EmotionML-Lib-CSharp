@@ -40,6 +40,29 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
 
+        public bool Equals(object obj, bool ignoreInfoPart = false)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Item control = (Item)obj;
+            if (!ignoreInfoPart)
+            {
+                if (!this.info.Equals(control.Info))
+                {
+                    return false;
+                }
+            }
+
+            return (this.name == control.Name);
+        }
+
         /// <summary>
         /// creates a DOM of item
         /// </summary>

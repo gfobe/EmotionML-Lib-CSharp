@@ -78,6 +78,87 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { info = value; }
         }
 
+        public List<Item> Items {
+            get { return items; }
+            set { items = value; }
+        }
+
+
+        /// <summary>
+        /// compares this vocabulary with another for equality
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <returns>objects are equal</returns>
+        public override bool Equals(object obj)
+        {
+            string[] ignore = new string[] { };
+            return Equals(obj, ignore);
+        }
+
+        /// <summary>
+        /// compares this vocabulary with another for equality
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <param name="ignore">ignorations (supported: info)</param>
+        /// <returns>objects are equal</returns>
+        public bool Equals(object obj, string[] ignore)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Vocabulary control = (Vocabulary)obj;
+            if (!ignore.Contains<string>("info"))
+            {
+                if (!this.info.Equals(control.Info))
+                {
+                    return false;
+                }
+            }
+            if (this.id == control.Id
+            && this.type == control.Type)
+            {
+                //iterate througt items
+                List<Item> controlItems = control.Items;
+                if (this.items.Count != controlItems.Count)
+                {
+                    return false; //not same numer of items
+                }
+
+                foreach (Item testItem in this.items)
+                {
+                    bool continueIteration = false;
+                    foreach (Item testControlItem in controlItems)
+                    {
+                        if (testItem.Equals(testControlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //current testItem not found in items of control object
+                }
+
+                return true; //all items found in items of control object
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// adds item to vokabulary
         /// </summary>

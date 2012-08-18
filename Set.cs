@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    public class Set<EmotionPart> : List<EmotionPart> 
+    public class Set<EmotionPart> : List<EmotionPart>
     {
         protected Uri uri;
     

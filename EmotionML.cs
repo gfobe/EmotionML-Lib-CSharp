@@ -35,7 +35,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// Versions of EmotionML Recommendations
         /// </summary>
-        public const string[] VERSIONS = new string[] { "1.0" };
+        public static readonly string[] VERSIONS = new string[] { "1.0" };
 
         /// <summary>
         /// Version of this EmotionML-Library

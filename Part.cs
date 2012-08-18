@@ -14,8 +14,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         public const string APPRAISAL = "appraisal";
         public const string ACTIONTENDENCY = "actiontendency";
 
-
-        public string name;
+        /// <summary>
+        /// name of the entry (name out of set)
+        /// </summary>
+        protected string name;
         /// <summary>
         /// the value [0.0, 1.0]
         /// dimension MUST have a value or a trace, the other MAY //TODO:
@@ -94,6 +96,38 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             get { return trace; }
             set { trace = value; }
+        }
+
+
+        public bool Equals(object obj, bool ignoreConfidencePart = false)  //OPTIMIZE: one interface for ignoring (confidence, info)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Part control = (Part)obj;
+            if (!ignoreConfidencePart)
+            {
+                if (this.confidence == control.Confidence)
+                {
+                    return false;
+                }
+            }
+
+            if (this.name == control.Name
+            && this.value == control.Value)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

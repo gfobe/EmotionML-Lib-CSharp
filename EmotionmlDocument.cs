@@ -136,6 +136,120 @@ namespace Vsr.Hawaii.EmotionmlLib
         /* ### OTHER METHODS ### */
 
         /// <summary>
+        /// compares this emotionml document with another for equality
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <returns>objects are equal</returns>
+        public override bool Equals(object obj)
+        {
+            string[] ignore = new string[] { };
+            return Equals(obj, ignore);
+        }
+
+        /// <summary>
+        /// compares this emotionml document with another for equality
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <param name="ignore">ignorations (supported: info, plaintext)</param>
+        /// <returns>objects are equal</returns>
+        public bool Equals(object obj, string[] ignore)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            EmotionMLDocument control = (EmotionMLDocument)obj;
+            if (!ignore.Contains<string>("info"))
+            {
+                if (!this.info.Equals(control.Info))
+                {
+                    return false;
+                }
+            }
+            if (!ignore.Contains<string>("plaintext"))
+            {
+                if (this.plaintext != control.Plaintext)
+                {
+                    return false;
+                }
+            }
+            if (this.categorySet.AbsoluteUri == control.CategorySet.AbsoluteUri
+            && this.dimensionSet.AbsoluteUri == control.DimensionSet.AbsoluteUri
+            && this.appraisalSet.AbsoluteUri == control.AppraisalSet.AbsoluteUri
+            && this.actionTendencySet.AbsoluteUri == control.ActionTendencySet.AbsoluteUri
+            && this.version == control.Version)
+            {
+                //iterate through vocabularies
+                List<Vocabulary> controlItems = control.Vocabularies;
+                if (this.vocabularies.Count != controlItems.Count)
+                {
+                    return false; //not same numer of items
+                }
+
+                foreach (Vocabulary testItem in this.vocabularies)
+                {
+                    bool continueIteration = false;
+                    foreach (Vocabulary testControlItem in controlItems)
+                    {
+                        if (testItem.Equals(testControlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //current testItem not found in items of control object
+                }
+
+                //iterate through emotions
+                List<Emotion> controlEmotions = control.Emotions;
+                if (this.emotions.Count != controlEmotions.Count)
+                {
+                    return false; //not same numer of items
+                }
+
+                foreach (Emotion testItem in this.emotions)
+                {
+                    bool continueIteration = false;
+                    foreach (Emotion testControlItem in controlEmotions)
+                    {
+                        if (testItem.Equals(testControlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //current testItem not found in items of control object
+                }
+
+
+                return true; //all items found
+            }
+            else
+            {
+                return false; //something simple is wrong
+            }
+        }
+
+        /// <summary>
         /// adds an vocabulary to document
         /// </summary>
         /// <param name="vocabulary">defined emotion vocabulary</param>

@@ -62,6 +62,31 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { mediaType = value; }
         }
 
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Reference control = (Reference)obj;
+            if (this.mediaType == control.MediaType
+            && this.role == control.Role
+            && this.uri.AbsoluteUri == control.Uri.AbsoluteUri)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// creates a DOM of reference
         /// </summary>

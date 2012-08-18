@@ -49,6 +49,31 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { plaintext = value; }
         }
 
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Info control = (Info)obj;
+            if (this.content.ToString() == control.Content.ToString()
+            && this.id == control.Id
+            && this.plaintext == control.Plaintext)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// creates a DOM of <info/>
         /// </summary>

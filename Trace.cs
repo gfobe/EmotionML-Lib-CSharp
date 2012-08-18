@@ -93,6 +93,30 @@ namespace Vsr.Hawaii.EmotionmlLib
             return frequency.ToString() + "Hz";
         }
 
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Trace control = (Trace)obj;
+            if (this.frequency == control.Frequency
+            && this.samples == control.Samples)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// creates a DOM of trace
         /// </summary>

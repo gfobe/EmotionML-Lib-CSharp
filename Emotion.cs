@@ -166,6 +166,12 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { version = value; }
         }
 
+        public List<Reference> References
+        {
+            get { return references; }
+        }
+
+
         public string ExpressedThrough {
             get { return expressedThrough; }
             set
@@ -290,13 +296,207 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// compares this emotion with another for equality
         /// </summary>
-        /// <param name="emotion"></param>
-        /// <returns></returns>
-        public bool equalsEmotion(Emotion emotion)
+        /// <param name="obj">object to compare with</param>
+        /// <returns>objects are equal</returns>
+        public override bool Equals(object obj)
         {
-            //TODO: to emotions are equal?
+            string[] ignore = new string[] { };
+            return Equals(obj, ignore);
+        }
 
-            return false;
+        /// <summary>
+        /// compares this emotion with another for equality
+        /// </summary>
+        /// <param name="obj">object to compare with</param>
+        /// <param name="ignore">ignorations (supported: info)</param>
+        /// <returns>objects are equal</returns>
+        public bool Equals(object obj, string[] ignore)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false; //wrong type
+            }
+            if (base.Equals(obj))
+            {
+                return true; //same instance
+            }
+
+            Emotion control = (Emotion)obj;
+            if (!ignore.Contains<string>("info"))
+            {
+                if (!this.info.Equals(control.Info))
+                {
+                    return false;
+                }
+            }
+
+            if (this.category.Equals(control.Categories)
+            && this.dimension.Equals(control.Dimensions)
+            && this.appraisal.Equals(control.Appraisals)
+            && this.actionTendency.Equals(control.ActionTendencies)
+            && this.version == control.Version
+            && this.id == control.Id
+            && this.start == control.Start
+            && this.end == control.End
+            && this.duration == control.Duration
+            && this.timeRefUri.AbsoluteUri == control.TimeRefUri.AbsoluteUri
+            && this.timeRefAnchorPoint == control.TimeRefAnchorPoint
+            && this.offsetToStart == control.OffsetToStart
+            && this.expressedThrough == control.ExpressedThrough)
+            {
+                //control references
+                if (this.references.Count != control.References.Count)
+                {
+                    return false;
+                }
+                foreach (Reference thisReference in this.references)
+                {
+                    bool continueIteration = false;
+                    foreach (Reference controlReference in control.References)
+                    {
+                        if (thisReference.Equals(controlReference))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //some reference not found
+                }
+
+                //control sets
+                if (this.category.Uri.AbsoluteUri != control.Categories.Uri.AbsoluteUri)
+                {
+                    return false;
+                }
+                if (this.dimension.Uri.AbsoluteUri != control.Dimensions.Uri.AbsoluteUri)
+                {
+                    return false;
+                }
+                if (this.appraisal.Uri.AbsoluteUri != control.Appraisals.Uri.AbsoluteUri)
+                {
+                    return false;
+                }
+                if (this.actionTendency.Uri.AbsoluteUri != control.ActionTendencies.Uri.AbsoluteUri)
+                {
+                    return false;
+                }
+
+                //control categories
+                if (category.Count != control.Categories.Count)
+                {
+                    return false;
+                }
+                foreach (Category thisItem in this.category)
+                {
+                    bool continueIteration = false;
+                    foreach (Category controlItem in control.Categories)
+                    {
+                        if (thisItem.Equals(controlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //some category not found
+                }
+
+                //control dimensions
+                if (dimension.Count != control.Dimensions.Count)
+                {
+                    return false;
+                }
+                foreach (Dimension thisItem in this.dimension)
+                {
+                    bool continueIteration = false;
+                    foreach (Dimension controlItem in control.Dimensions)
+                    {
+                        if (thisItem.Equals(controlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //some dimension not found
+                }
+
+                //control appraisals
+                if (appraisal.Count != control.Appraisals.Count)
+                {
+                    return false;
+                }
+                foreach (Appraisal thisItem in this.appraisal)
+                {
+                    bool continueIteration = false;
+                    foreach (Appraisal controlItem in control.Appraisals)
+                    {
+                        if (thisItem.Equals(controlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //some appraisal not found
+                }
+
+                //control action tendencies
+                if (actionTendency.Count != control.ActionTendencies.Count)
+                {
+                    return false;
+                }
+                foreach (ActionTendency thisItem in this.actionTendency)
+                {
+                    bool continueIteration = false;
+                    foreach (ActionTendency controlItem in control.ActionTendencies)
+                    {
+                        if (thisItem.Equals(controlItem))
+                        {
+                            continueIteration = true;
+                            break;
+                            //why C# hasn't a continue 2?
+                        }
+                    }
+                    if (continueIteration)
+                    {
+                        continueIteration = false;
+                        continue;
+                    }
+
+                    return false; //some action tendency not found
+                }
+
+
+                return true; //all important is equally
+            }
+
+            return false; //something is different
         }
 
         /// <summary>
@@ -307,7 +507,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
                 {
-                    return categoryToMatch.name == newCategory.name;
+                    return categoryToMatch.Name== newCategory.Name;
                 });
 
 
@@ -330,7 +530,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         public bool deleteCategory(string categoryName) {
             int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
             {
-                return categoryToMatch.name == categoryName;
+                return categoryToMatch.Name == categoryName;
             });
             if (foundOnIndex != -1)
             {
@@ -352,7 +552,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
             {
-                return dimensionToMatch.name == newDimension.name;
+                return dimensionToMatch.Name == newDimension.Name;
             });
             if (foundOnIndex == -1)
             {
@@ -374,7 +574,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
             {
-                return dimensionToMatch.name == dimensionName;
+                return dimensionToMatch.Name == dimensionName;
             });
             if (foundOnIndex != -1)
             {
@@ -396,7 +596,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
             {
-                return appraisalToMatch.name == newAppraisal.name;
+                return appraisalToMatch.Name == newAppraisal.Name;
             });
             if (foundOnIndex == -1)
             {
@@ -418,7 +618,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
             {
-                return appraisalToMatch.name == appraisalName;
+                return appraisalToMatch.Name == appraisalName;
             });
             if (foundOnIndex != -1)
             {
@@ -440,7 +640,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
             {
-                return actionTendencyToMatch.name == newactionTendency.name;
+                return actionTendencyToMatch.Name == newactionTendency.Name;
             });
             if (foundOnIndex == -1)
             {
@@ -462,7 +662,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
             {
-                return actionTendencyToMatch.name == actionTendencyName;
+                return actionTendencyToMatch.Name == actionTendencyName;
             });
             if (foundOnIndex != -1)
             {
@@ -552,7 +752,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                 emotion.SetAttribute("category-set", category.Uri.AbsoluteUri);
                 foreach (Category cat in category) {
                     XmlElement catNode = emotionXml.CreateElement("category");
-                    catNode.SetAttribute("name", cat.name);
+                    catNode.SetAttribute("name", cat.Name);
                     if (cat.Value != null)
                     {
                         catNode.SetAttribute("value", cat.Value.ToString());
@@ -572,7 +772,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                 dimension.ForEach(delegate(Dimension dim)
                 {
                     XmlElement dimNode = emotionXml.CreateElement("dimension");
-                    dimNode.SetAttribute("name", dim.name);
+                    dimNode.SetAttribute("name", dim.Name);
                     if (dim.Value != null)
                     {
                         dimNode.SetAttribute("value", dim.Value.ToString());
@@ -592,7 +792,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                 appraisal.ForEach(delegate(Appraisal apr)
                 {
                     XmlElement aprNode = emotionXml.CreateElement("appraisal");
-                    aprNode.SetAttribute("name", apr.name);
+                    aprNode.SetAttribute("name", apr.Name);
                     if (apr.Value != null)
                     {
                         aprNode.SetAttribute("value", apr.Value.ToString());
@@ -612,7 +812,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                 actionTendency.ForEach(delegate(ActionTendency act)
                 {
                     XmlElement actNode = emotionXml.CreateElement("action-tendency");
-                    actNode.SetAttribute("name", act.name);
+                    actNode.SetAttribute("name", act.Name);
                     if (act.Value != null)
                     {
                         actNode.SetAttribute("value", act.Value.ToString());
