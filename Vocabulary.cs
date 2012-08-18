@@ -25,10 +25,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// </summary>
         protected Info info = null;
 
-        public Vocabulary(string type, string id) 
+        public Vocabulary(string type, string id, Item item) 
         {
             Id = id;
             Type = type;
+            addItem(item);
         }
 
         public string Id
@@ -184,6 +185,12 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="name">name of item</param>
         public void removeItem(Item itemToRemove)
         {
+            //do not remove the last one
+            if (items.Count == 1)
+            {
+                throw new EmotionMLException("Try to remove last item. At lest one item must be in the vocabulary.");
+            }
+
             if (!items.Exists(delegate(Item existingItem){
                 return itemToRemove.Name == existingItem.Name;
             }))

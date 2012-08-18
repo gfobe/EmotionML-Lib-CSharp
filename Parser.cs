@@ -41,7 +41,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             return emotionml;
         }
 
-        public List<Emotion> getEmotionList()
+        public List<Emotion> getEmotions()
         {
             return emotionml.Emotions;
         }
@@ -59,24 +59,71 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// parses the whole staff of EmotionML
         /// </summary>
-        protected void parse()
+        /// <param name="ignoreSchema">do not validate input against EmotionML schema</param>
+        public void parse(bool ignoreSchema = false)
         {
             init();
-            parseGeneral();
-            parseVocabularies();
-            parseEmotions();
+            if (!ignoreSchema)
+            {
+                validateAgainstScheme();
+            }
+
+            XmlNode documentRoot = xml.SelectSingleNode("/");
+            XmlNode root = documentRoot.FirstChild;
+            if (root.Name == "emotionml")
+            {
+                parseEmotionMLDocument(root);
+
+                //loop through vocabularies
+                XmlNodeList vocabularyNodes = root.SelectNodes("emo:vocabulary", nsManager);
+                foreach (XmlNode node in vocabularyNodes)
+                {
+                    emotionml.addVocabulary(parseVocabulary(node));
+                }
+
+                //loop through emotions
+                XmlNodeList emotionNodes = root.SelectNodes("emo:emotion", nsManager);
+                foreach (XmlNode node in emotionNodes)
+                {
+                    emotionml.addEmotion(parseEmotion(node));
+                }
+            }
+            else if (root.Name == "vocabulary")
+            {
+                emotionml.addVocabulary(parseVocabulary(root));
+            }
+            else if (root.Name == "emotion")
+            {
+                emotionml.addEmotion(parseEmotion(root));
+            }
+            else
+            {
+                throw new EmotionMLException("Can only handle root elements <emotionml/> <vocabulary/> and <emotion/>");
+            }
+
             validate();
         }
 
+        /// <summary>
+        /// initalisation of parser
+        /// </summary>
         protected void init()
         {
             //init namespacemanager
-            nsManager = new XmlNamespaceManager(xml.OwnerDocument.NameTable);
+            nsManager = new XmlNamespaceManager(xml.NameTable);
             nsManager.AddNamespace("emo", EmotionML.NAMESPACE);
         }
 
-        protected void validate()
+        protected void validateAgainstScheme()
         {
+
+            //TODO
+        }
+
+        public bool validate()
+        {
+            //TODO
+
             //sets ids versions in <emotion> and <emotionml>
             // -> in emotionml rein
             //dimension MUST have a value or a trace, the other MAY
@@ -85,20 +132,47 @@ namespace Vsr.Hawaii.EmotionmlLib
             //TODO: Prüfen, ob wirklich eins angegeben werden muss oder nur, wenn Emotionen da sind
             //TODO: sagen welches Set fehlt. Wenn ich eine Category habe, nutzt ein DimensionSet nicht viel
             //throw new EmotionMLException("At least one EmotionSet must be defined.");
+
+            return false;
         }
 
-
-        protected void parseGeneral()
+        /// <summary>
+        /// parse general things of <emotionml/>
+        /// </summary>
+        protected void parseEmotionMLDocument(XmlNode emotionmlNode)
         {
-            //category sets
-        }
-
-        protected void parseVocabularies()
-        {
-            XmlNodeList vocabularyNodes = xml.SelectNodes("emo:vocabulary", nsManager);
-            foreach (XmlNode node in vocabularyNodes)
+            emotionml.Version = emotionmlNode.Attributes["version"].Value;
+            if (emotionmlNode.Attributes["category-set"] != null)
             {
-                emotionml.addVocabulary(parseVocabulary(node));
+                emotionml.CategorySet = new Uri(emotionmlNode.Attributes["category-set"].Value);
+            }
+            if (emotionmlNode.Attributes["dimension-set"] != null)
+            {
+                emotionml.DimensionSet = new Uri(emotionmlNode.Attributes["dimension-set"].Value);
+            }
+            if (emotionmlNode.Attributes["appraisal-set"] != null)
+            {
+                emotionml.AppraisalSet = new Uri(emotionmlNode.Attributes["appraisal-set"].Value);
+            }
+            if (emotionmlNode.Attributes["action-tendency-set"] != null)
+            {
+                emotionml.ActionTendencySet = new Uri(emotionmlNode.Attributes["action-tendency-set"].Value);
+            }
+
+            XmlNodeList infoNodes = emotionmlNode.SelectNodes("./emo:info", nsManager);
+            if (infoNodes.Count > 1)
+            {
+                throw new EmotionMLException("Only maximum one instance of <info/> is allowed. " + infoNodes.Count + " given.");
+            }
+            else if (infoNodes.Count == 1)
+            {
+                emotionml.Info = parseInfo(infoNodes.Item(0));
+            }
+
+            XmlNode textnode = emotionmlNode.SelectSingleNode("text()");
+            if (textnode != null)
+            {
+                emotionml.Plaintext = textnode.InnerText;
             }
         }
 
@@ -109,23 +183,64 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>vocabulary object</returns>
         protected Vocabulary parseVocabulary(XmlNode vocabularyNode)
         {
-            return new Vocabulary("TODO","TODO");
-        }
+            Vocabulary vocabulary = null;
+            string id = vocabularyNode.Attributes["id"].Value;
+            string type = vocabularyNode.Attributes["type"].Value;
 
-        protected void parseEmotions()
-        {
-            XmlNodeList emotionNodes = xml.SelectNodes("emo:emotion", nsManager);
-            foreach (XmlNode node in emotionNodes)
+            XmlNodeList items = vocabularyNode.SelectNodes("./emo:item", nsManager);
+            if (items.Count == 0)
             {
-                emotionml.addEmotion(parseEmotion(node));
+                throw new EmotionMLException("Each vocabulary must have at least one item.");
             }
+
+            //parse items 
+            foreach (XmlNode itemNode in items)
+            {
+                string name = itemNode.Attributes["name"].Value;
+                Item newItem = new Item(name);
+
+                //parse item
+                XmlNodeList infoNodes = itemNode.SelectNodes("./emo:info", nsManager);
+                if (infoNodes.Count > 1)
+                {
+                    throw new EmotionMLException("Only maximum one instance of <info/> is allowed. " + infoNodes.Count + " given.");
+                }
+                else if (infoNodes.Count == 1)
+                {
+                    newItem.Info = parseInfo(infoNodes.Item(0));
+                }
+
+                //add item to vocabulary
+                if (vocabulary == null)
+                {
+                    vocabulary = new Vocabulary(type, id, newItem);
+                }
+                else
+                {
+                    vocabulary.addItem(newItem);
+                }
+
+            }
+
+            //search for info element
+            XmlNodeList infos = vocabularyNode.SelectNodes("./emo:info", nsManager);
+            if (infos.Count > 1)
+            {
+                    throw new EmotionMLException("Only maximum one instance of <info/> is allowed. " + infos.Count + " given.");
+            }
+            else if (infos.Count == 1)
+            {
+                vocabulary.Info = parseInfo(infos.Item(0));
+            }
+
+            return vocabulary;
         }
 
         /// <summary>
         /// parses <emotion/> area to Emotion
         /// </summary>
         /// <param name="emotionNode">XML node of <emotion/></param>
-        /// <returns>emotion object</returns>
+        /// <returns>Emotion object</returns>
         protected Emotion parseEmotion(XmlNode emotionNode)
         {
             Emotion emotion = new Emotion();
@@ -145,9 +260,9 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
 
             //expressedThrough
-            if (emotionNode.Attributes["expressedThrough"] != null)
+            if (emotionNode.Attributes["expressed-through"] != null)
             {
-                emotion.ExpressedThrough = emotionNode.Attributes["expressedThrough"].Value;
+                emotion.ExpressedThrough = emotionNode.Attributes["expressed-through"].Value;
             }
 
             //add time ralted stuff
@@ -187,13 +302,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
 
             //infoblock
-            XmlNode infoblock = emotionNode.SelectSingleNode("emo:info", nsManager);
-            if(infoblock != null) {
-                Info infoArea = new Info();
-                infoArea.Content = infoblock.ChildNodes;
-                if(infoblock.Attributes["id"] != null) {
-                    infoArea.Id = infoblock.Attributes["id"].Value;
-                }
+            XmlNodeList infoblocks = emotionNode.SelectNodes("emo:info", nsManager);
+            if (infoblocks.Count > 1)
+            {
+                throw new EmotionMLException("Only maximum one instance of <info/> is allowed. " + infoblocks.Count + " given.");
+            }
+            else if (infoblocks.Count == 1)
+            {
+                Info infoArea = parseInfo(infoblocks.Item(0));
                 emotion.Info = infoArea;
             }
             
@@ -345,12 +461,94 @@ namespace Vsr.Hawaii.EmotionmlLib
                 emotion.ActionTendencies = actionTendencies;
             }
 
+            //search for plaintext
+            XmlNode textnode = emotionNode.SelectSingleNode("text()");
+            if (textnode != null)
+            {
+                emotion.Plaintext = textnode.InnerText;
+            }
+
             return emotion;
         }
 
+        /// <summary>
+        /// parses <reference/> area to Reference
+        /// </summary>
+        /// <param name="referenceNode">XML node of <reference/></param>
+        /// <returns>Reference object</returns>
         protected Reference parseReference(XmlNode referenceNode)
         {
-            return new Reference(new Uri("TODO"));
+            Uri uri = new Uri(referenceNode.Attributes["uri"].Value);
+            Reference reference = new Reference(uri);
+
+            if (referenceNode.Attributes["role"] != null)
+            {
+                reference.Role = referenceNode.Attributes["role"].Value;
+            }
+            if (referenceNode.Attributes["media-type"] != null)
+            {
+                reference.MediaType = referenceNode.Attributes["media-type"].Value;
+            }
+
+            return reference;
+        }
+
+        /// <summary>
+        /// parse <trace/> element
+        /// </summary>
+        /// <param name="traceNode">XMLNode oder <trace/></param>
+        /// <returns>Trace object</returns>
+        protected Trace parseTrace(XmlNode traceNode)
+        {
+            string samples = traceNode.Attributes["samples"].Value;
+            float frequency = float.Parse(traceNode.Attributes["freq"].Value);
+            return new Trace(frequency, samples);
+        }
+
+        /// <summary>
+        /// parse <item/> to Item
+        /// </summary>
+        /// <param name="itemNode">XML Node of <item/></param>
+        /// <returns>Item object</returns>
+        protected Item parseItem(XmlNode itemNode)
+        {
+            string name = itemNode.Attributes["name"].Value;
+            Item item = new Item(name);
+
+            //search for info element
+            XmlNodeList infos = itemNode.SelectNodes("./emo:info", nsManager);
+            if (infos.Count > 1)
+            {
+                throw new EmotionMLException("Only maximum one instance of <info/> is allowed. " + infos.Count + " given.");
+            }
+            else if (infos.Count == 1)
+            {
+                item.Info = parseInfo(infos.Item(0));
+            }
+
+            return item;
+        }
+
+        /// <summary>
+        /// parses the <info/> section
+        /// </summary>
+        /// <param name="infoNode">XML node of <info/></param>
+        /// <returns>Info object</returns>
+        protected Info parseInfo(XmlNode infoNode)
+        {
+            Info infoArea = new Info();
+            infoArea.Content = infoNode.ChildNodes;
+            if (infoNode.Attributes["id"] != null)
+            {
+                infoArea.Id = infoNode.Attributes["id"].Value;
+            }
+            XmlNode textnode = infoNode.SelectSingleNode("text()");
+            if (textnode != null)
+            {
+                infoArea.Plaintext = textnode.InnerText;
+            }
+
+            return infoArea;
         }
     }
 }

@@ -838,6 +838,8 @@ namespace Vsr.Hawaii.EmotionmlLib
 
             emotionXml.AppendChild(emotion);
 
+            //TODO: validate against scheme (as static method)
+
             return emotionXml;
         }
 

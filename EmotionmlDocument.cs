@@ -319,6 +319,8 @@ namespace Vsr.Hawaii.EmotionmlLib
                 emotionmlXml.AppendChild(emotionmlXml.CreateTextNode(plaintext));
             }
 
+            //TODO: validate against scheme (as static method)
+
             return emotionmlXml;
         }
 
