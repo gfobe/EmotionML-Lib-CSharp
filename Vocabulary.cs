@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    class Vocabulary
+    public class Vocabulary
     {
         /// <summary>
         /// type of vocabulary (category, dimension, appraisal, action-tendency)
@@ -19,7 +19,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// items in vocabulary
         /// </summary>
-        protected List<string> items = new List<string>();
+        protected List<string> items = new List<string>(); //TODO: extra Klasse, da ein Info-Block rein muss.
+        /// <summary>
+        /// <info/> for vocabulary
+        /// </summary>
+        protected Info info = null;
 
         public Vocabulary(string type, string id) 
         {
@@ -66,6 +70,12 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                 type = value;
             }
+
+        }
+             
+        public Info Info {
+            get { return info; }
+            set { info = value; }
         }
 
         /// <summary>
@@ -105,7 +115,11 @@ namespace Vsr.Hawaii.EmotionmlLib
             //set up <vocabulary>
             XmlElement vocabulary = vocabularyXml.CreateElement("vocabulary");
             vocabulary.SetAttribute("type", this.type);
-            vocabulary.SetAttribute("id", this.id);           
+            vocabulary.SetAttribute("id", this.id);
+            if (info != null)
+            {
+                vocabulary.AppendChild(info.ToDom());
+            }
 
             foreach (string entry in this.items)
             {

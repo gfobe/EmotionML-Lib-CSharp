@@ -47,9 +47,9 @@
     <Compile Include="Dimension.cs" />
     <Compile Include="EmotionMLException.cs" />
     <Compile Include="Info.cs" />
-    <Compile Include="EmotionList.cs" />
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionMLDocument.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Part.cs" />
     <Compile Include="Reference.cs" />
     <Compile Include="Set.cs" />

@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    class Reference
+    public class Reference
     {
         const string EXPRESSED_BY = "expressedBy";
         const string EXPERIENCED_BY = "experiencedBy";

@@ -118,6 +118,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             return ToDom().ToString();
         }
 
+
         /// <summary>
         /// creates an XmlAttribute with value in context of XmlDocument
         /// </summary>

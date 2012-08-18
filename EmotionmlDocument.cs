@@ -6,26 +6,26 @@ using System.Xml;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    class EmotionMLDocument
+    public class EmotionMLDocument
     {
         /* ## attributes ## */
 
         /// <summary>
         /// emotions categories in current emotion annotation
         /// </summary>
-        public Uri categorySet = null;
+        protected Uri categorySet = null;
         /// <summary>
         /// emotions dimensions in current emotion annotation
         /// </summary>
-        public Uri dimensionSet = null;
+        protected Uri dimensionSet = null;
         /// <summary>
         /// emotions appraisals in current emotion annotation
         /// </summary>
-        public Uri appraisalSet = null;
+        protected Uri appraisalSet = null;
         /// <summary>
         /// emotions action tendencies in current emotion annotation
         /// </summary>
-        public Uri actionTendencySet = null;
+        protected Uri actionTendencySet = null;
         /// <summary>
         /// version of EmotionML
         /// if you do not set it here, it must be set in <emotion/> tag
@@ -47,8 +47,32 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// </summary>
         protected List<Emotion> emotions = new List<Emotion>();
 
+        /* ## other ## */
+        /// <summary>
+        /// plaintext in <emotionml/>
+        /// </summary>
+        protected string plaintext = null;
+
 
         /* ### GETTER AND SETTER ### */
+
+        public Info Info
+        {
+            get { return info; }
+            set { info = value; }
+        }
+
+        public List<Vocabulary> Vocabularies
+        {
+            get { return vocabularies; }
+            set { vocabularies = value; }
+        }
+
+        public List<Emotion> Emotions
+        {
+            get { return emotions; }
+            set { emotions = value; }
+        }
 
         /// <summary>
         /// category set for categories
@@ -102,16 +126,31 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { version = value; }
         }
 
+        public string Plaintext
+        {
+            get { return plaintext; }
+            set { plaintext = value; }
+        }
+
 
         /* ### OTHER METHODS ### */
 
         /// <summary>
-        /// adds a emotion vocabulary to list
+        /// adds an vocabulary to document
         /// </summary>
         /// <param name="vocabulary">defined emotion vocabulary</param>
         public void addVocabulary(Vocabulary vocabulary)
         {
             this.vocabularies.Add(vocabulary);
+        }
+
+        /// <summary>
+        /// adds an emotion to document
+        /// </summary>
+        /// <param name="emotion">the emotion</param>
+        public void addEmotion(Emotion emotion)
+        {
+            this.emotions.Add(emotion);
         }
 
         /// <summary>
@@ -160,6 +199,11 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
 
             emotionmlXml.AppendChild(emotionml);
+
+            if (plaintext != null)
+            {
+                emotionmlXml.AppendChild(emotionmlXml.CreateTextNode(plaintext));
+            }
 
             return emotionmlXml;
         }

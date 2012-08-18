@@ -11,19 +11,25 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// content of info area
         /// </summary>
-        XmlNode content = null;
+        XmlNodeList content = null;
 
         /// <summary>
         /// id for this info area
         /// </summary>
         string id = null;
 
+        /// <summary>
+        /// plaintext for <info/>
+        /// </summary>
+        string plaintext = null;
+
         public Info()
         {
             content = null;
         }
 
-        public XmlNode Content {
+        public XmlNodeList Content
+        {
             get { return content; }
             set { content = value; }
         }
@@ -31,7 +37,16 @@ namespace Vsr.Hawaii.EmotionmlLib
         public string Id
         {
             get { return id; }
-            set { id = value; }
+            set {
+                //TODO: validate http://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName
+                id = value; 
+            }
+        }
+
+        public string Plaintext
+        {
+            get { return plaintext; }
+            set { plaintext = value; }
         }
 
         /// <summary>
@@ -50,8 +65,15 @@ namespace Vsr.Hawaii.EmotionmlLib
                 idAttribute.Value = id;
                 infoTag.AppendChild(idAttribute);
             }
+            foreach (XmlNode infoContent in this.content)
+            {
+                infoTag.AppendChild(infoContent);
+            }
+            if (plaintext != null)
+            {
+                infoTag.AppendChild(info.CreateTextNode(plaintext));
+            }
 
-            infoTag.AppendChild(this.content);
             info.AppendChild(infoTag);
 
             return info;

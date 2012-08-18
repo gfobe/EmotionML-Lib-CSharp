@@ -16,10 +16,11 @@ namespace Vsr.Hawaii.EmotionmlLib
 
         public Set(Uri uri) : base()
         {
+            //TODO: rise exception when URI is empty
             this.uri = uri;
         }
 
-        public Set()
+        public Set() : base()
         {
             uri = null;
         }
