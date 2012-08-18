@@ -30,7 +30,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// Version of highest implemented EmotionML-Recommendation
         /// </summary>
-        public const string VERSION = "1.0 - Working Draft 2011-04-07";
+        public const string VERSION = "1.0 - Candidate Recommendation 2012-05-10";
 
         /// <summary>
         /// Version of this EmotionML-Library
