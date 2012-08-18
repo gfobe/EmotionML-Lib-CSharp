@@ -19,7 +19,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// items in vocabulary
         /// </summary>
-        protected List<string> items = new List<string>(); //TODO: extra Klasse, da ein Info-Block rein muss.
+        protected List<Item> items = new List<Item>();
         /// <summary>
         /// <info/> for vocabulary
         /// </summary>
@@ -64,7 +64,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                             Part.CATEGORY + ", " +
                             Part.DIMENSION + ", " +
                             Part.APPRAISAL + ", " +
-                            Part.ACTIONTENDENCY
+                            Part.ACTIONTENDENCY + "."
                         );
                 }
 
@@ -82,24 +82,35 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// adds item to vokabulary
         /// </summary>
         /// <param name="name">name of item</param>
-        public void addItem(string name) 
+        public void addItem(Item newItem) 
         {
-            //TODO: test of valid attribute string
-            items.Add(name);
+            if (items.Exists(delegate(Item existingItem)
+            {
+                return existingItem.Name == newItem.Name;
+            }) )
+            {
+                items.Add(newItem);
+            }
+            else
+            {
+                throw new EmotionMLException("item \"" + newItem.Name + "\" already exists.");
+            }   
         }
 
         /// <summary>
         /// removes item from vokabulary
         /// </summary>
         /// <param name="name">name of item</param>
-        public void removeItem(string name)
+        public void removeItem(Item itemToRemove)
         {
-            if (!items.Contains(name))
+            if (!items.Exists(delegate(Item existingItem){
+                return itemToRemove.Name == existingItem.Name;
+            }))
             {
-                throw new EmotionMLException("item \"" + name + "\" is not in vocabulary");
+                throw new EmotionMLException("item \"" + itemToRemove.Name + "\" is not in vocabulary.");
             }
-            int index = items.FindIndex(delegate(string itemname) {
-                return itemname == name;
+            int index = items.FindIndex(delegate(Item existingItem) {
+                return existingItem.Name == itemToRemove.Name;
             });
             items.RemoveAt(index);
         }
@@ -121,11 +132,9 @@ namespace Vsr.Hawaii.EmotionmlLib
                 vocabulary.AppendChild(info.ToDom());
             }
 
-            foreach (string entry in this.items)
+            foreach (Item item in this.items)
             {
-                XmlElement item = vocabularyXml.CreateElement("item");
-                item.SetAttribute("name", entry);
-                vocabulary.AppendChild(item);
+                vocabulary.AppendChild(item.ToDom());
             }
 
             vocabularyXml.AppendChild(vocabulary);

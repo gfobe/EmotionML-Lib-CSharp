@@ -49,6 +49,7 @@
     <Compile Include="Info.cs" />
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionMLDocument.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Part.cs" />
     <Compile Include="Reference.cs" />
