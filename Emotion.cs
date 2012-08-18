@@ -23,269 +23,258 @@ namespace Vsr.Hawaii.EmotionmlLib
         const string EXPRESSED_THROUGHT_CAMERA = "camera";
         const string EXPRESSED_THROUGHT_MICROPHONE = "microphone";
 
+
+        /* ## CHILD TAGS ## */
+
         /// <summary>
         /// emotions categories in current emotion annotation
         /// </summary>
-        //public List<EmotionCategory> category = new List<EmotionCategory>();
-        public Set<Category> category = new Set<Category>();
+        protected Set<Category> category = new Set<Category>();
         /// <summary>
         /// emotions dimensions in current emotion annotation
         /// </summary>
-        //public List<EmotionDimension> dimension = new List<EmotionDimension>();
-        public Set<Dimension> dimension = new Set<Dimension>();
+        protected Set<Dimension> dimension = new Set<Dimension>();
         /// <summary>
         /// emotions appraisals in current emotion annotation
         /// </summary>
-        //public List<EmotionAppraisal> appraisal = new List<EmotionAppraisal>();
-        public Set<Appraisal> appraisal = new Set<Appraisal>();
+        protected Set<Appraisal> appraisal = new Set<Appraisal>();
         /// <summary>
         /// emotions action tendencies in current emotion annotation
         /// </summary>
-        //public List<EmotionActionTendency> actionTendency = new List<EmotionActionTendency>();
-        Set<ActionTendency> actionTendency = new Set<ActionTendency>();
+        protected Set<ActionTendency> actionTendency = new Set<ActionTendency>();
 
-        /// <summary>
-        /// unique id of emotion annotation
-        /// </summary>
-        public string id = null;
         /// <summary>
         /// references of emotion annotation
         /// </summary>
-        public List<string> references = new List<string>();
+        protected List<Reference> references = new List<Reference>();
+        /// <summary>
+        /// info block with forther other informations about the emotion
+        /// </summary>
+        protected Info info = null;
 
+
+        /* ## ATTRIBUTES ## */
+        /// <summary>
+        /// unique id of emotion annotation
+        /// </summary>
+        protected string id = null;
+        /// <summary>
+        /// version of EmotionML
+        /// optional if you set it in surrounding <emotionml/> tag
+        /// </summary>
+        protected string version = null;
         /// <summary>
         /// modality throught which an emotion is produced
         /// space delimeted set of values
         /// </summary>
-        public string expressedThrough = null;
+        protected string expressedThrough = null;
 
-        /// <summary>
-        /// info block with forther other informations about the emotion
-        /// </summary>
-        public Info info = null;
-
-        //### timestamps ###
+        /* # timestamps # */
+        //It isn't a xsd:dateTime, because it has to work with EMMA and other
+        //http://lists.w3.org/Archives/Public/www-multimodal/2011Sep/0001.html
 
         /// <summary>
         /// denote the starting time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
         /// </summary>
-        public int? start = null; //TODO:validate //TODO: get/set
+        protected int? start = null;
         /// <summary>
         /// denote the ending time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
         /// </summary>
-        public int? end = null; //TODO:validate 
-        //Yes, I know; it's bad that it isn't a xsd:dateTime, but it has to work with EMMA //TODO: prüfen und URL dran
+        protected int? end = null;
         /// <summary>
         /// duration of the event in milliseconds (xsd:nonNegativeInteger)
         /// </summary>
-        public int? duration = null;  //TODO:validate 
+        protected int? duration = null;
 
-        // ### relative times ###
+        /* # relative times # */
+
         /// <summary>
         /// indicating the URI used to anchor the relative timestamp (xsd:anyURI)
         /// </summary>
-        public Uri timeRefUri = null;
+        protected Uri timeRefUri = null;
         /// <summary>
         /// indicates from wich time the relative time is measured (start=default or end)
         /// </summary>
-        public int? timeRefAnchorPoint = null; //TODO: default start
+        protected int? timeRefAnchorPoint = null;
         /// <summary>
         /// offset in milliseconds for the start of input from the anchor point
         /// </summary>
-        public int? offsetToStart = null; //TODO: default 0, Abhängig von timeRefUri und timeRefAnchorPoint
+        protected int? offsetToStart = null;
 
-        //TODO: <trace>
-
-
-
-        public Emotion()
-        {
-  //          initNamespaceHandling();
-        }
-
+        /* # other # */
         /// <summary>
-        /// create an emotion annotation out of EmotionML
+        /// plaintext in <emotion/>
         /// </summary>
-        /// <param name="xml">EmotionML string (emotion-part including min. one set)</param>
-        public Emotion(string xml)
+        protected string plaintext = null;
+
+
+        /* ### GETTER AND SETTER ### */
+
+        public Info Info
         {
-            XmlDocument emotionml = new XmlDocument();
-            emotionml.LoadXml(xml);
-
- //           initNamespaceHandling();
-            parseEmotionML(emotionml.DocumentElement);
+            get { return info; }
+            set { info = value; }
         }
 
-        /// <summary>
-        /// create an emotion annotation out of a XmlNode
-        /// </summary>
-        /// <param name="emotion">Emotion-XMLNode</param>
-        public Emotion(XmlNode emotion)
+        public Set<Category> Categories
         {
-//            initNamespaceHandling();
-            parseEmotionML(emotion);
+            get { return category; }
+            set { category = value; }
+        }
+
+        public Set<Dimension> Dimensions
+        {
+            get { return dimension; }
+            set { dimension = value; }
+        }
+
+        public Set<Appraisal> Appraisals
+        {
+            get { return appraisal; }
+            set { appraisal = value; }
+        }
+
+        public Set<ActionTendency> ActionTendencies
+        {
+            get { return actionTendency; }
+            set { actionTendency = value; }
+        }
+
+        public string Id
+        {
+            get { return id; }
+            set
+            {
+                //TODO: validate xsd:ID
+                id = value;
+            }
+        }
+
+        public string Version
+        {
+            get
+            {
+                if (null == version)
+                {
+                    return "1.0"; //OPTIMIZE: use EmotionML.VERSION
+                }
+
+                return version;
+            }
+            set { version = value; }
+        }
+
+        public string ExpressedThrough {
+            get { return expressedThrough; }
+            set
+            {
+                //TODO: validate
+                expressedThrough = value;
+            }
+        }
+
+        public int? Start
+        {
+            get { return start; }
+            set
+            {
+                if (value != null && value < 0)
+                {
+                    throw new EmotionMLException("only possitive values are allowed as start time");
+                }
+                if (end != null)
+                {
+                    if (value > end)
+                    {
+                        throw new EmotionMLException("start time must be before end time");
+                    }
+                }
+                start = value;
+            }
+        }
+
+        public int? End
+        {
+            get { return end; }
+            set
+            {
+                if (value != null && value < 0)
+                {
+                    throw new EmotionMLException("only possitive values are allowed as end time");
+                }
+                if (start != null)
+                {
+                    if (start > value)
+                    {
+                        throw new EmotionMLException("end time must be after start time");
+                    }
+                }
+                end = value;
+            }
+        }
+
+        public int? Duration
+        {
+            get { return duration; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new EmotionMLException("duration have to be positive");
+                }
+                duration = value;
+            }
+        }
+
+        public Uri TimeRefUri
+        {
+            get { return timeRefUri; }
+            set { timeRefUri = value; }
+        }
+
+        public int? TimeRefAnchorPoint
+        {
+            get {
+                if (null == timeRefAnchorPoint)
+                {
+                    //default start
+                    return start;
+                }
+
+                return timeRefAnchorPoint; 
+            }
+            set {
+                if (start != value && end != value)
+                {
+                    throw new EmotionMLException("refAnchorPoint has to be value of start or end");
+                }
+                timeRefAnchorPoint = value;
+            }
+        }
+
+        public int? OffsetToStart
+        {
+            get
+            {
+                if (null == offsetToStart)
+                {
+                    return 0;
+                }
+                return offsetToStart;
+            }
+            set { offsetToStart = value; }
+        }
+
+        public string Plaintext
+        {
+            get { return plaintext; }
+            set { plaintext = value; }
         }
 
 
-        /// <summary>
-        /// parses the whole staff of Emotion in EmotionML
-        /// </summary>
-        /// <param name="emotionNode"></param>
-        protected void parseEmotionML(XmlNode emotionNode) {
-            //init namespacemanager
-            XmlNamespaceManager nsManager = new XmlNamespaceManager(emotionNode.OwnerDocument.NameTable);
-            nsManager.AddNamespace("emo", EmotionML.NAMESPACE);
-
-            //add general stuff
-            if (emotionNode.Attributes["id"] != null)
-            {
-                id = emotionNode.Attributes["id"].InnerText;
-            }
-
-            //references
-            XmlNodeList referenceNodes = emotionNode.SelectNodes("emo:reference", nsManager);
-            foreach (XmlNode refs in referenceNodes)
-            {
-                references.Add(refs.ToString());
-            }
-
-            //infoblock
-            info.Content = (XmlElement)emotionNode.SelectSingleNode("./info");
-            //TODO: Exception wenn nicht vorhanden oder null?
-            //expressedThrough
-            if (emotionNode.Attributes["expressedThrough"] != null)
-            {
-                expressedThrough = emotionNode.Attributes["expressedThrough"].Value;
-            }
-
-            //add emotion sets
-            if (emotionNode.Attributes["category-set"] != null)
-            {
-                category.Uri = new Uri(emotionNode.Attributes["category-set"].InnerText);
-            }
-            if (emotionNode.Attributes["dimension-set"] != null)
-            {
-                dimension.Uri = new Uri(emotionNode.Attributes["dimension-set"].InnerText);
-            }
-            if (emotionNode.Attributes["appraisal-set"] != null)
-            {
-                appraisal.Uri = new Uri(emotionNode.Attributes["appraisal-set"].InnerText);
-            }
-            if (emotionNode.Attributes["action-tendency-set"] != null)
-            {
-                actionTendency.Uri = new Uri(emotionNode.Attributes["action-tendency-set"].InnerText);
-            }
-            
-            //add categories
-            XmlNodeList categories = emotionNode.SelectNodes("emo:category", nsManager);
-            foreach (XmlNode cat in categories)
-            {
-                string categoryName  = cat.Attributes["name"].InnerText;
-                float? categoryValue = null;
-                float? categoryConfidence = null;
-
-                if (cat.Attributes["value"] != null) 
-                {
-                    categoryValue = float.Parse(cat.Attributes["value"].InnerText);
-                }
-                if (cat.Attributes["confidence"] != null) 
-                {
-                    categoryConfidence = float.Parse(cat.Attributes["confidence"].InnerText);
-                }
-
-                addCategory(new Category(categoryName, categoryValue, categoryConfidence));
-            }
-
-            //add dimensions
-            XmlNodeList dimensions = emotionNode.SelectNodes("emo:dimension", nsManager);
-            foreach (XmlNode dim in dimensions)
-            {
-                string dimensionName = dim.Attributes["name"].InnerText;
-                float? dimensionValue = null;
-                float? dimensionConfidence = null;
-
-                if (dim.Attributes["value"] != null)
-                {
-                    dimensionValue = float.Parse(dim.Attributes["value"].InnerText);
-                }
-                if (dim.Attributes["confidence"] != null)
-                {
-                    dimensionConfidence = float.Parse(dim.Attributes["confidence"].InnerText);
-                }
-
-                addDimension(new Dimension(dimensionName, dimensionValue, dimensionConfidence));
-            }
-
-            //add appraisals
-            XmlNodeList appraisals = emotionNode.SelectNodes("emo:appraisal", nsManager);
-            foreach (XmlNode apr in appraisals)
-            {
-                string appraisalName = apr.Attributes["name"].InnerText;
-                float? appraisalValue = null;
-                float? appraisalConfidence = null;
-
-                if (apr.Attributes["value"] != null)
-                {
-                    appraisalValue = float.Parse(apr.Attributes["value"].InnerText);
-                }
-                if (apr.Attributes["confidence"] != null)
-                {
-                    appraisalConfidence = float.Parse(apr.Attributes["confidence"].InnerText);
-                }
-
-                addAppraisal(new Appraisal(appraisalName, appraisalValue, appraisalConfidence));
-            }
-
-            //add action tendencies
-            XmlNodeList actionTendencies = emotionNode.SelectNodes("emo:action-tendency", nsManager);
-            foreach (XmlNode act in actionTendencies)
-            {
-                string actionTendencyName = act.Attributes["name"].InnerText;
-                float? actionTendencyValue = null;
-                float? actionTendencyConfidence = null;
-
-                if (act.Attributes["value"] != null)
-                {
-                    actionTendencyValue = float.Parse(act.Attributes["value"].InnerText);
-                }
-                if (act.Attributes["confidence"] != null)  {
-                    actionTendencyConfidence = float.Parse(act.Attributes["confidence"].InnerText);
-                }
-
-                addActionTendency(new ActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
-            }
-
-            //there must be at least one set defined
-            if (category.Uri == null && dimension.Uri == null && appraisal.Uri == null && actionTendency.Uri == null)
-            {
-                //TODO: Prüfen, ob wirklich eins angegeben werden muss oder nur, wenn Emotionen da sind
-                //TODO: sagen welches Set fehlt. Wenn ich eine Category habe, nutzt ein DimensionSet nicht viel
-                throw new EmotionMLException("At least one EmotionSet must be defined.");
-            }
-
-            //add time ralted stuff
-            if(emotionNode.Attributes["start"] != null) {
-                start = Convert.ToInt32(emotionNode.Attributes["start"].Value);
-            }
-            if(emotionNode.Attributes["end"] != null) {
-                this.end = Convert.ToInt32(emotionNode.Attributes["end"].Value);
-            }
-            if(emotionNode.Attributes["duration"] != null) {
-                duration = Convert.ToInt32(emotionNode.Attributes["end"].Value);
-            }
-            if(emotionNode.Attributes["timeRefUri"] != null) { //TODO groß/kleinschreibung
-                timeRefUri = new Uri(emotionNode.Attributes["timeRefUri"].Value);
-            }
-            if(emotionNode.Attributes["timeRefAnchorPoint"] != null) {
-                timeRefAnchorPoint = Convert.ToInt32(emotionNode.Attributes["timeRefAnchorPoint"].Value);
-            }
-            if(emotionNode.Attributes["offsetToStart"] != null) {
-                timeRefAnchorPoint = Convert.ToInt32(emotionNode.Attributes["offsetToStart"].Value);
-            }
-            //TODO: Abhängigkeiten prüfen
-        }
+        /* ### PUBLIC METHODS ### */ 
 
         /// <summary>
         /// sets a default category-set, dimension-set, appraisal-set and action-tendency-set
@@ -310,45 +299,6 @@ namespace Vsr.Hawaii.EmotionmlLib
             return false;
         }
 
-
-
-        //TODO: wozu wenn public?
-       /* public void setCategorySet(string categorySetUri)
-        {
-            categorySet = new Uri(categorySetUri);
-        }
-        public void setCategorySet(Uri categorySetUri)
-        {
-            categorySet = categorySetUri;
-        }
-
-        public void setDimensionSet(string dimensionSetUri)
-        {
-            dimensionSet = new Uri(dimensionSetUri);
-        }
-        public void setDimensionSet(Uri dimensionSetUri)
-        {
-            dimensionSet = dimensionSetUri;
-        }
-
-        public void setAppraisalSet(string appraisalSetUri)
-        {
-            appraisalSet = new Uri(appraisalSetUri);
-        }
-        public void setAppraisalSet(Uri appraisalSetUri)
-        {
-            appraisalSet = appraisalSetUri;
-        }
-
-        public void setActionTendencySet(string actionTendencySetUri)
-        {
-            actionTendencySet = new Uri(actionTendencySetUri);
-        }
-        public void setActionTendencySet(Uri actionTendencySetUri)
-        {
-            actionTendencySet = actionTendencySetUri;
-        }*/
-
         /// <summary>
         /// modify the values of a category, adds it if not exists
         /// </summary>
@@ -367,8 +317,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                category[foundOnIndex].value = newCategory.value;
-                category[foundOnIndex].confidence = newCategory.confidence;
+                category[foundOnIndex].Value = newCategory.Value;
+                category[foundOnIndex].Confidence = newCategory.Confidence;
             }
         }
 
@@ -410,8 +360,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                dimension[foundOnIndex].value = newDimension.value;
-                dimension[foundOnIndex].confidence = newDimension.confidence;
+                dimension[foundOnIndex].Value = newDimension.Value;
+                dimension[foundOnIndex].Confidence = newDimension.Confidence;
             }
         }
 
@@ -454,8 +404,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                appraisal[foundOnIndex].value = newAppraisal.value;
-                appraisal[foundOnIndex].confidence = newAppraisal.confidence;
+                appraisal[foundOnIndex].Value = newAppraisal.Value;
+                appraisal[foundOnIndex].Confidence = newAppraisal.Confidence;
             }
         }
 
@@ -498,8 +448,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                actionTendency[foundOnIndex].value = newactionTendency.value;
-                actionTendency[foundOnIndex].confidence = newactionTendency.confidence;
+                actionTendency[foundOnIndex].Value = newactionTendency.Value;
+                actionTendency[foundOnIndex].Confidence = newactionTendency.Confidence;
             }
         }
 
@@ -526,21 +476,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
-        /// name the emotion annotation with an id
-        /// </summary>
-        /// <param name="newid">id for emotion annotation</param>
-        public void setId(string newid)
-        {
-            id = newid;
-        }
-
-        /// <summary>
         /// adds a reference for emotion annotation
         /// </summary>
         /// <param name="newReference">the reference URL</param>
-        public void addReference(string newReference)
+        public void addReference(Reference newReference)
         {
-            //TODO: gegen Aufbau xml:ID prüfen
             references.Add(newReference);
         }
 
@@ -549,11 +489,12 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// </summary>
         /// <param name="reference">the value of the reference</param>
         /// <returns>deletion succeded</returns>
-        public bool deleteReference(string referenceName)
+        public bool deleteReference(Reference referenceName)
         {
-            int foundOnIndex = references.FindIndex(delegate(string referenceToMatch)
+            int foundOnIndex = references.FindIndex(delegate(Reference referenceToMatch)
             {                
-                return ( referenceToMatch.CompareTo(referenceName) == 0 );
+                //OPTIMIZE: let reference decide if another reference is equal
+                return ( referenceToMatch.Uri == referenceName.Uri );
             });
             if (foundOnIndex != -1)
             {
@@ -612,13 +553,13 @@ namespace Vsr.Hawaii.EmotionmlLib
                 foreach (Category cat in category) {
                     XmlElement catNode = emotionXml.CreateElement("category");
                     catNode.SetAttribute("name", cat.name);
-                    if (cat.value != null)
+                    if (cat.Value != null)
                     {
-                        catNode.SetAttribute("value", cat.value.ToString());
+                        catNode.SetAttribute("value", cat.Value.ToString());
                     }
-                    if (cat.confidence != null)
+                    if (cat.Confidence != null)
                     {
-                        catNode.SetAttribute("confidence", cat.confidence.ToString());
+                        catNode.SetAttribute("confidence", cat.Confidence.ToString());
                     }
                     emotion.AppendChild(catNode);
                 };
@@ -632,13 +573,13 @@ namespace Vsr.Hawaii.EmotionmlLib
                 {
                     XmlElement dimNode = emotionXml.CreateElement("dimension");
                     dimNode.SetAttribute("name", dim.name);
-                    if (dim.value != null)
+                    if (dim.Value != null)
                     {
-                        dimNode.SetAttribute("value", dim.value.ToString());
+                        dimNode.SetAttribute("value", dim.Value.ToString());
                     }
-                    if (dim.confidence != null)
+                    if (dim.Confidence != null)
                     {
-                        dimNode.SetAttribute("confidence", dim.confidence.ToString());
+                        dimNode.SetAttribute("confidence", dim.Confidence.ToString());
                     }
                     emotion.AppendChild(dimNode);
                 });
@@ -652,13 +593,13 @@ namespace Vsr.Hawaii.EmotionmlLib
                 {
                     XmlElement aprNode = emotionXml.CreateElement("appraisal");
                     aprNode.SetAttribute("name", apr.name);
-                    if (apr.value != null)
+                    if (apr.Value != null)
                     {
-                        aprNode.SetAttribute("value", apr.value.ToString());
+                        aprNode.SetAttribute("value", apr.Value.ToString());
                     }
-                    if (apr.confidence != null)
+                    if (apr.Confidence != null)
                     {
-                        aprNode.SetAttribute("confidence", apr.confidence.ToString());
+                        aprNode.SetAttribute("confidence", apr.Confidence.ToString());
                     }
                     emotion.AppendChild(aprNode);
                 });
@@ -672,25 +613,30 @@ namespace Vsr.Hawaii.EmotionmlLib
                 {
                     XmlElement actNode = emotionXml.CreateElement("action-tendency");
                     actNode.SetAttribute("name", act.name);
-                    if (act.value != null)
+                    if (act.Value != null)
                     {
-                        actNode.SetAttribute("value", act.value.ToString());
+                        actNode.SetAttribute("value", act.Value.ToString());
                     }
-                    if (act.confidence != null)
+                    if (act.Confidence != null)
                     {
-                        actNode.SetAttribute("confidence", act.confidence.ToString());
+                        actNode.SetAttribute("confidence", act.Confidence.ToString());
                     }
                     emotion.AppendChild(actNode);
                 });
             }
 
             //loop trought <reference>
-            references.ForEach(delegate(string referenceValue)
+            references.ForEach(delegate(Reference referenceValue)
             {
-                XmlElement referenceElement = emotionXml.CreateElement("reference");
-                referenceElement.SetAttribute("uri", referenceValue);
-                emotion.AppendChild(referenceElement);
+                emotion.AppendChild(referenceValue.ToDom());
             });
+
+            if (plaintext != null)
+            {
+                emotion.AppendChild(emotionXml.CreateTextNode(plaintext));
+            }
+
+            emotionXml.AppendChild(emotion);
 
             return emotionXml;
         }
