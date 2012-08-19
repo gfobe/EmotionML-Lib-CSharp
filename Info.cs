@@ -38,8 +38,14 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             get { return id; }
             set {
-                //TODO: validate http://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-NCName
-                id = value; 
+                if (Helper.isXsdId(value))
+                {
+                    id = value;
+                }
+                else
+                {
+                    throw new EmotionMLException("Id have to be a xsd:ID.");
+                }
             }
         }
 
@@ -80,7 +86,6 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML DOM</returns>
         public XmlDocument ToDom()
         {
-            //TODO: set namespace?
             XmlDocument info = new XmlDocument();
 
             XmlElement infoTag = info.CreateElement("info");

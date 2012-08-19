@@ -147,8 +147,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             get { return id; }
             set
             {
-                //TODO: validate xsd:ID
-                id = value;
+                if (Helper.isXsdId(value))
+                {
+                    id = value;
+                }
+                else
+                {
+                    throw new EmotionMLException("Id have to be a xsd:ID");
+                }
             }
         }
 
@@ -158,7 +164,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             {
                 if (null == version)
                 {
-                    return "1.0"; //OPTIMIZE: use EmotionML.VERSION
+                    return EmotionML.VERSION;
                 }
 
                 return version;
@@ -176,8 +182,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             get { return expressedThrough; }
             set
             {
-                //TODO: validate
-                expressedThrough = value;
+                if (Helper.isNmtokens(value))
+                {
+                    expressedThrough = value;
+                }
+                else
+                {
+                    throw new EmotionMLException("ExpressedThrought has to be a xsd:nmtoken");
+                }
             }
         }
 
@@ -748,6 +760,10 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (version != null)
             {
                 emotion.SetAttribute("version", version);
+            }
+            if (expressedThrough != null)
+            {
+                emotion.SetAttribute("expressed-through", expressedThrough);
             }
 
             //loop trought <category>

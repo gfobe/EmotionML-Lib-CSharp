@@ -37,13 +37,18 @@ namespace Vsr.Hawaii.EmotionmlLib
             get { return id; }
             set
             {
-                //TODO: test of valid attribute string
                 if (value == "")
                 {
                     throw new EmotionMLException("Emotion vocabulary must have an id.");
                 }
-
-                id = value;
+                if (Helper.isXsdId(value))
+                {
+                    id = value;
+                }
+                else
+                {
+                    throw new EmotionMLException("Id have to be a xsd:ID");
+                }
             }
         }
 
@@ -81,7 +86,6 @@ namespace Vsr.Hawaii.EmotionmlLib
 
         public List<Item> Items {
             get { return items; }
-            set { items = value; }
         }
 
 
@@ -191,7 +195,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                 throw new EmotionMLException("Try to remove last item. At lest one item must be in the vocabulary.");
             }
 
-            if (!items.Exists(delegate(Item existingItem){
+            if (!items.Exists(delegate(Item existingItem) {
                 return itemToRemove.Name == existingItem.Name;
             }))
             {

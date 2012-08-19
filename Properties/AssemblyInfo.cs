@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("EmotionML")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Library to work with EmotionML")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Gerhard Fobe")]
+[assembly: AssemblyCompany("Gerhard Fobe (www.gerhard-fobe.de)")]
 [assembly: AssemblyProduct("EmotionML")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
 // für COM-Komponenten. Wenn Sie auf einen Typ in dieser Assembly von 
 // COM zugreifen müssen, legen Sie das ComVisible-Attribut für diesen Typ auf "true" fest.
-[assembly: ComVisible(false)]
+[assembly: ComVisible(true)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
 [assembly: Guid("496b3d55-ef7e-48ca-8b3c-5fa795e4a555")]

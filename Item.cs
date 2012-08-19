@@ -23,7 +23,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             get { return name;  }
             set
             {
-                //TODO: validate
+                /*if (Helper.isNmtoken(value))
+                {
+                    name = value;
+                }
+                else
+                {
+                    throw new EmotionMLException("Name of item have to be a xsd:nmtoken.");
+                }*/
                 name = value;
             }
         }

@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -46,6 +47,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="Dimension.cs" />
     <Compile Include="EmotionMLException.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionMLDocument.cs" />
@@ -60,10 +62,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="schemata\emotionml-fragments.xsd">
+    <EmbeddedResource Include="resources\emotionml-fragments.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="schemata\emotionml.xsd">
+    <EmbeddedResource Include="resources\emotionml.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
