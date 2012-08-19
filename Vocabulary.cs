@@ -217,15 +217,18 @@ namespace Vsr.Hawaii.EmotionmlLib
             vocabulary.SetAttribute("id", this.id);
             if (info != null)
             {
-                vocabulary.AppendChild(info.ToDom());
+                XmlNode importedNode = vocabularyXml.ImportNode(info.ToDom().FirstChild, true);
+                vocabulary.AppendChild(importedNode);
             }
 
             foreach (Item item in this.items)
             {
-                vocabulary.AppendChild(item.ToDom());
+                XmlNode importedNode = vocabularyXml.ImportNode(item.ToDom().FirstChild, true);
+                vocabulary.AppendChild(importedNode);
             }
 
             vocabularyXml.AppendChild(vocabulary);
+
             return vocabularyXml;
         }
 
@@ -235,7 +238,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML</returns>
         public string ToXml()
         {
-            return ToDom().ToString();
+            return ToDom().OuterXml;
         }
     }
 }

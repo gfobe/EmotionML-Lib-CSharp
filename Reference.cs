@@ -117,7 +117,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML</returns>
         public string toXml()
         {
-            return this.ToDom().ToString();
+            return this.ToDom().OuterXml;
         }
 
         /// <summary>

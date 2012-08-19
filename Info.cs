@@ -92,7 +92,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             foreach (XmlNode infoContent in this.content)
             {
-                infoTag.AppendChild(infoContent);
+                XmlNode importedNode = info.ImportNode(infoContent, true);
+                infoTag.AppendChild(importedNode);
             }
             if (plaintext != null)
             {
@@ -110,7 +111,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML within <info/> tag</returns>
         public string ToXml() 
         {
-            return this.ToDom().ToString();
+            return this.ToDom().OuterXml;
         }
 
     }

@@ -745,6 +745,10 @@ namespace Vsr.Hawaii.EmotionmlLib
             if(id != null) {
                 emotion.SetAttribute("id", id);
             }
+            if (version != null)
+            {
+                emotion.SetAttribute("version", version);
+            }
 
             //loop trought <category>
             if (category.Count > 0)
@@ -756,6 +760,11 @@ namespace Vsr.Hawaii.EmotionmlLib
                     if (cat.Value != null)
                     {
                         catNode.SetAttribute("value", cat.Value.ToString());
+                    }
+                    else if (cat.Trace != null)
+                    {
+                        XmlNode importedNode = emotionXml.ImportNode(cat.Trace.ToDom().FirstChild, true);
+                        catNode.AppendChild(importedNode);
                     }
                     if (cat.Confidence != null)
                     {
@@ -777,6 +786,11 @@ namespace Vsr.Hawaii.EmotionmlLib
                     {
                         dimNode.SetAttribute("value", dim.Value.ToString());
                     }
+                    else if (dim.Trace != null)
+                    {
+                        XmlNode importedNode = emotionXml.ImportNode(dim.Trace.ToDom().FirstChild, true);
+                        dimNode.AppendChild(importedNode);
+                    }
                     if (dim.Confidence != null)
                     {
                         dimNode.SetAttribute("confidence", dim.Confidence.ToString());
@@ -797,6 +811,11 @@ namespace Vsr.Hawaii.EmotionmlLib
                     {
                         aprNode.SetAttribute("value", apr.Value.ToString());
                     }
+                    else if (apr.Trace != null)
+                    {
+                        XmlNode importedNode = emotionXml.ImportNode(apr.Trace.ToDom().FirstChild, true);
+                        aprNode.AppendChild(importedNode);
+                    }
                     if (apr.Confidence != null)
                     {
                         aprNode.SetAttribute("confidence", apr.Confidence.ToString());
@@ -816,7 +835,13 @@ namespace Vsr.Hawaii.EmotionmlLib
                     if (act.Value != null)
                     {
                         actNode.SetAttribute("value", act.Value.ToString());
+                    } 
+                    else if (act.Trace != null) 
+                    {
+                        XmlNode importedNode = emotionXml.ImportNode(act.Trace.ToDom().FirstChild, true);
+                        actNode.AppendChild(importedNode);
                     }
+
                     if (act.Confidence != null)
                     {
                         actNode.SetAttribute("confidence", act.Confidence.ToString());
@@ -828,9 +853,18 @@ namespace Vsr.Hawaii.EmotionmlLib
             //loop trought <reference>
             references.ForEach(delegate(Reference referenceValue)
             {
-                emotion.AppendChild(referenceValue.ToDom());
+                XmlNode importedNode = emotionXml.ImportNode(referenceValue.ToDom().FirstChild, true);
+                emotion.AppendChild(importedNode);
             });
 
+            //add <info>
+            if (info != null)
+            {
+                XmlNode importedNode = emotionXml.ImportNode(info.ToDom().FirstChild, true);
+                emotion.AppendChild(importedNode);
+            }
+
+            //add plaintext
             if (plaintext != null)
             {
                 emotion.AppendChild(emotionXml.CreateTextNode(plaintext));
@@ -849,7 +883,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML representation of emotion</returns>
         public string ToXml()
         {
-            return ToDom().ToString();
+            return ToDom().OuterXml;
         }
 
     }

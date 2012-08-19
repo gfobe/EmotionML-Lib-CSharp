@@ -30,7 +30,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// version of EmotionML
         /// if you do not set it here, it must be set in <emotion/> tag
         /// </summary>
-        protected string version = null;
+        protected string version = EmotionML.VERSION;
 
         /* ## child elements ## */
 
@@ -276,6 +276,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             //init root node with attributes
             XmlDocument emotionmlXml = new XmlDocument();
             XmlElement emotionml = emotionmlXml.CreateElement("emotionml");
+            emotionml.SetAttribute("version", version);
+            emotionml.SetAttribute("xmlns", EmotionML.NAMESPACE);
 
             if (this.categorySet != null)
             {
@@ -297,19 +299,29 @@ namespace Vsr.Hawaii.EmotionmlLib
             //add info block
             if (info != null) 
             {
-                emotionml.AppendChild(info.ToDom());
+                XmlNode importedNode = emotionmlXml.ImportNode(info.ToDom().FirstChild, true);
+                emotionml.AppendChild(importedNode);
             }
 
             //add vocabularies to list
             foreach (Vocabulary vocabulary in this.vocabularies)
             {
-                emotionml.AppendChild(vocabulary.ToDom());
+                XmlNode importedNode = emotionmlXml.ImportNode(vocabulary.ToDom().FirstChild, true);
+                emotionml.AppendChild(importedNode);
             }
 
             //add emotions to list
             foreach (Emotion emotion in this.emotions)
             {
-                emotionml.AppendChild(emotion.ToDom());
+                XmlElement importedNode = (XmlElement)emotionmlXml.ImportNode(emotion.ToDom().FirstChild, true);
+
+                //remove EmotionML namespace if available
+                if (importedNode.Attributes["xmlns"] != null)
+                {
+                    importedNode.RemoveAttribute("xmlns");
+                }
+
+                emotionml.AppendChild(importedNode);
             }
 
             emotionmlXml.AppendChild(emotionml);
@@ -330,7 +342,17 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML of emotions</returns>
         public string ToXml()
         {
-            return this.ToDom().ToString();
+            return this.ToDom().OuterXml;
+        }
+
+        /// <summary>
+        /// creates a whole XML document
+        /// </summary>
+        /// <returns>XML document</returns>
+        public string toXmlDocument()
+        {
+            string output = "<?xml version=\"1.0\" charset=\"utf-8\" ?>\n";
+            return output + ToXml();
         }
     }
 

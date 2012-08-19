@@ -79,6 +79,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             item.AppendChild(itemTag);
             if (info != null)
             {
+                XmlNode importedNode = item.ImportNode(info.ToDom().FirstChild, true);
                 itemTag.AppendChild(info.ToDom());
             }
 
@@ -91,7 +92,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>XML</returns>
         public string ToXml()
         {
-            return ToDom().ToString();
+            return ToDom().OuterXml;
         }
     }
 }

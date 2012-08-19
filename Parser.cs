@@ -68,8 +68,24 @@ namespace Vsr.Hawaii.EmotionmlLib
                 validateAgainstScheme();
             }
 
-            XmlNode documentRoot = xml.SelectSingleNode("/");
-            XmlNode root = documentRoot.FirstChild;
+            //TODO: named entities auflösen: http://msdn.microsoft.com/en-us/library/system.xml.xmlnodereader.resolveentity(v=vs.71).aspx
+
+            //filter rootnode
+            XmlNode root = null;
+            XmlNode documentNode = xml.SelectSingleNode("/");
+            XmlNodeList documentNodes = documentNode.ChildNodes;
+            foreach(XmlNode testNode in documentNodes) {
+                if(testNode.GetType() == typeof(XmlElement)) {
+                    root = testNode;
+                    break;
+                }
+            }
+            if (root == null)
+            {
+                throw new EmotionMLException("Can not find the root element.");
+            }
+
+            //start work
             if (root.Name == "emotionml")
             {
                 parseEmotionMLDocument(root);
