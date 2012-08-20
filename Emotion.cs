@@ -20,8 +20,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         const string EXPRESSED_THROUGHT_LOCOMOTION = "locomotion";
         const string EXPRESSED_THROUGHT_POSTURE = "posture";
         const string EXPRESSED_THROUGHT_PHYSIOLOGY = "physiology";
+        //in examples
         const string EXPRESSED_THROUGHT_CAMERA = "camera";
         const string EXPRESSED_THROUGHT_MICROPHONE = "microphone";
+        const string EXPRESSED_THROUGHT_SKIN_COLOR = "facial-skin-color";
 
 
         /* ## CHILD TAGS ## */
@@ -278,7 +280,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             {
                 if (null == offsetToStart)
                 {
-                    return 0;
+                    return 0; //default
                 }
                 return offsetToStart;
             }
@@ -292,7 +294,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
 
-        /* ### PUBLIC METHODS ### */ 
+        /* ### PUBLIC METHODS ### */
 
         /// <summary>
         /// sets a default category-set, dimension-set, appraisal-set and action-tendency-set
@@ -705,8 +707,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             int foundOnIndex = references.FindIndex(delegate(Reference referenceToMatch)
             {                
-                //OPTIMIZE: let reference decide if another reference is equal
-                return ( referenceToMatch.Uri == referenceName.Uri );
+                return ( referenceToMatch.Equals(referenceName) );
             });
             if (foundOnIndex != -1)
             {
@@ -749,6 +750,12 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>DOM of emotion definition</returns>
         public XmlDocument ToDom()
         {
+            //OPTIMIZE: refactore Emotion
+            if (category == null && dimension == null && appraisal == null && actionTendency == null)
+            {
+                throw new EmotionMLException("At least one category, dimension, appraisal or action tendency needed.");
+            }
+
             XmlDocument emotionXml = new XmlDocument();
 
             //set up <emotion>
