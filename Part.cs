@@ -72,11 +72,17 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             get { return this.value; }
             set {
-                if (value < 0 || value > 1)
+                if (null == value)
+                {
+                    this.value = value;
+                    return;
+                }
+                else if (value < 0 || value > 1)
                 {
                     throw new EmotionMLException("only values in [0.0, 1.0] are allowed");
                 }
-                this.value = value; 
+                this.trace = null; //only value or trace is allowed 
+                this.value = value;
             }
         }
 
@@ -95,7 +101,12 @@ namespace Vsr.Hawaii.EmotionmlLib
         public Trace Trace
         {
             get { return trace; }
-            set { trace = value; }
+            set 
+            { 
+                //only value or trace is allowed
+                this.value = null;
+                this.trace = value; 
+            }
         }
 
 
