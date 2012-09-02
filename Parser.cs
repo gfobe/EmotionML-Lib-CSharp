@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.IO;
+using System.Xml.Schema;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
@@ -60,12 +62,12 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// parses the whole staff of EmotionML
         /// </summary>
         /// <param name="ignoreSchema">do not validate input against EmotionML schema</param>
-        public void parse(bool ignoreSchema = false)
+        public void parse(bool ignoreSchema = true)
         {
             init();
             if (!ignoreSchema)
             {
-                validateAgainstScheme();
+                isValidAgainstSchema();
             }
 
             //TODO: named entities auflösen: http://msdn.microsoft.com/en-us/library/system.xml.xmlnodereader.resolveentity(v=vs.71).aspx
@@ -130,10 +132,33 @@ namespace Vsr.Hawaii.EmotionmlLib
             nsManager.AddNamespace("emo", EmotionML.NAMESPACE);
         }
 
-        protected void validateAgainstScheme()
+        protected bool isValidAgainstSchema()
         {
+            string schemaStringGeneral = Helper.loadInternalResource("emotionml.xsd");
+            string schemaStringFragments = Helper.loadInternalResource("emotionml-fragments.xsd");
+            string xmlString = emotionml.toXmlDocument();
 
-            //TODO
+            //load xml document
+            XmlDocument xml = new XmlDocument();
+            xml.LoadXml(xmlString);
+
+            //add schemata
+            XmlSchema schema = XmlSchema.Read(new StringReader(schemaStringGeneral), null);
+            xml.Schemas.Add(schema);
+            schema = XmlSchema.Read(new StringReader(schemaStringFragments), null);
+            xml.Schemas.Add(schema);
+
+            //TODO: schauen, ob als Input ein dokument oder ein fragment kommt
+
+            try
+            {
+                xml.Validate(null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public bool validate()
