@@ -546,11 +546,9 @@ namespace Vsr.Hawaii.EmotionmlLib
         public void addCategory(Category newCategory)
         {
             int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
-                {
-                    return categoryToMatch.Name== newCategory.Name;
-                });
-
-
+            {
+                return categoryToMatch.Name== newCategory.Name;
+            });
             if (foundOnIndex == -1)
             {
                 category.Add(newCategory);
@@ -793,6 +791,10 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (version != null)
             {
                 emotion.SetAttribute("version", version);
+            }
+            else
+            {
+                emotion.SetAttribute("version", EmotionML.VERSION);
             }
             if (expressedThrough != null)
             {

@@ -31,7 +31,9 @@ using System.Text;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    public class Set<EmotionPart> : List<EmotionPart>
+    //OPTIMIZE: make searchable by name, so we can use emotion.Categories[categoryname].Confidence
+    //OPTIMIZE: make possible Set<Part> partset = new Set<Category>(); (typs exception)
+    public class Set<Part> : List<Part>
     {
         protected Uri uri;
     
@@ -50,5 +52,26 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             uri = null;
         }
+
+        /// <summary>
+        /// searches entries in list by name
+        /// </summary>
+        /// <param name="valueName">name in the name-attribute</param>
+        /// <returns>part of emotion or null if nothing found</returns>
+       /* public EmotionmlLib.Part searchByName(string valueName)
+        {
+            int foundOnIndex = this.FindIndex(delegate(EmotionmlLib.Part controlPart)
+            {
+                return controlPart.Name == valueName;
+            });
+            if (foundOnIndex != -1)
+            {
+                return (EmotionmlLib.Part)this.ElementAt(foundOnIndex);
+            }
+            else
+            {
+                return null;
+            }
+        }*/
     }
 }
