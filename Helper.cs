@@ -148,5 +148,47 @@ namespace Vsr.Hawaii.EmotionmlLib
 
             return resourceContent;
         }
+
+        /// <summary>
+        /// converts float to string without localisation
+        /// </summary>
+        /// <param name="number">float</param>
+        /// <returns>string</returns>
+        public static string float2string(float number)
+        {
+            if (null == number)
+            {
+                return null;
+            }
+
+            return number.ToString(System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+        }
+
+        /// <summary>
+        /// usupport null
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        public static string float2string(float? number)
+        {
+            if (null == number)
+            {
+                return null;
+            }
+            else
+            {
+                return float2string((float)number);
+            }
+        }
+
+        /// <summary>
+        /// converts a string to float without localisation
+        /// </summary>
+        /// <param name="number">string</param>
+        /// <returns>float</returns>
+        public static float string2float(string number)
+        {
+            return float.Parse(number, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+        }
     }
 }

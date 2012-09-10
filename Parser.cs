@@ -434,11 +434,11 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (cat.Attributes["value"] != null)
                     {
-                        categoryValue = float.Parse(cat.Attributes["value"].InnerText);
+                        categoryValue = Helper.string2float(cat.Attributes["value"].InnerText);
                     }
                     if (cat.Attributes["confidence"] != null)
                     {
-                        categoryConfidence = float.Parse(cat.Attributes["confidence"].InnerText);
+                        categoryConfidence = Helper.string2float(cat.Attributes["confidence"].InnerText);
                     }
 
                     categories.Add(new Category(categoryName, categoryValue, categoryConfidence));
@@ -461,11 +461,11 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (dim.Attributes["value"] != null)
                     {
-                        dimensionValue = float.Parse(dim.Attributes["value"].InnerText);
+                        dimensionValue = Helper.string2float(dim.Attributes["value"].InnerText);
                     }
                     if (dim.Attributes["confidence"] != null)
                     {
-                        dimensionConfidence = float.Parse(dim.Attributes["confidence"].InnerText);
+                        dimensionConfidence = Helper.string2float(dim.Attributes["confidence"].InnerText);
                     }
 
                     dimensions.Add(new Dimension(dimensionName, dimensionValue, dimensionConfidence));
@@ -488,11 +488,11 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (apr.Attributes["value"] != null)
                     {
-                        appraisalValue = float.Parse(apr.Attributes["value"].InnerText);
+                        appraisalValue = Helper.string2float(apr.Attributes["value"].InnerText);
                     }
                     if (apr.Attributes["confidence"] != null)
                     {
-                        appraisalConfidence = float.Parse(apr.Attributes["confidence"].InnerText);
+                        appraisalConfidence = Helper.string2float(apr.Attributes["confidence"].InnerText);
                     }
 
                     appraisals.Add(new Appraisal(appraisalName, appraisalValue, appraisalConfidence));
@@ -515,11 +515,11 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (act.Attributes["value"] != null)
                     {
-                        actionTendencyValue = float.Parse(act.Attributes["value"].InnerText);
+                        actionTendencyValue = Helper.string2float(act.Attributes["value"].InnerText);
                     }
                     if (act.Attributes["confidence"] != null)
                     {
-                        actionTendencyConfidence = float.Parse(act.Attributes["confidence"].InnerText);
+                        actionTendencyConfidence = Helper.string2float(act.Attributes["confidence"].InnerText);
                     }
 
                     actionTendencies.Add(new ActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
@@ -568,7 +568,8 @@ namespace Vsr.Hawaii.EmotionmlLib
         protected Trace parseTrace(XmlNode traceNode)
         {
             string samples = traceNode.Attributes["samples"].Value;
-            float frequency = float.Parse(traceNode.Attributes["freq"].Value);
+            //FIXME: Parse Hz
+            float frequency = Helper.string2float(traceNode.Attributes["freq"].Value);
             return new Trace(frequency, samples);
         }
 

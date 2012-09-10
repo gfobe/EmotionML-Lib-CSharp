@@ -364,7 +364,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             Emotion control = (Emotion)obj;
             if (!ignore.Contains<string>("info"))
             {
-                if (!this.info.Equals(control.Info))
+                if (this.info == null)
+                {
+                    if (control.info != null)
+                    {
+                        return false;
+                    }
+                }
+                else if (!this.info.Equals(control.Info))
                 {
                     return false;
                 }
@@ -750,6 +757,8 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="mergingEmotion">emotion to integrate in this emotion</param>
         public void mergeWithEmotion(Emotion mergingEmotion)
         {
+            //FIXME: merge sets also -> proplem: different sets
+
             mergingEmotion.category.ForEach(delegate(Category cat)
             {
                 addCategory(cat);
@@ -810,7 +819,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     catNode.SetAttribute("name", cat.Name);
                     if (cat.Value != null)
                     {
-                        catNode.SetAttribute("value", cat.Value.ToString());
+                        catNode.SetAttribute("value", Helper.float2string(cat.Value));
                     }
                     else if (cat.Trace != null)
                     {
@@ -819,7 +828,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (cat.Confidence != null)
                     {
-                        catNode.SetAttribute("confidence", cat.Confidence.ToString());
+                        catNode.SetAttribute("confidence", Helper.float2string(cat.Confidence));
                     }
                     emotion.AppendChild(catNode);
                 };
@@ -835,7 +844,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     dimNode.SetAttribute("name", dim.Name);
                     if (dim.Value != null)
                     {
-                        dimNode.SetAttribute("value", dim.Value.ToString());
+                        dimNode.SetAttribute("value", Helper.float2string(dim.Value));
                     }
                     else if (dim.Trace != null)
                     {
@@ -844,7 +853,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (dim.Confidence != null)
                     {
-                        dimNode.SetAttribute("confidence", dim.Confidence.ToString());
+                        dimNode.SetAttribute("confidence", Helper.float2string(dim.Confidence));
                     }
                     emotion.AppendChild(dimNode);
                 });
@@ -860,7 +869,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     aprNode.SetAttribute("name", apr.Name);
                     if (apr.Value != null)
                     {
-                        aprNode.SetAttribute("value", apr.Value.ToString());
+                        aprNode.SetAttribute("value", Helper.float2string(apr.Value));
                     }
                     else if (apr.Trace != null)
                     {
@@ -869,7 +878,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (apr.Confidence != null)
                     {
-                        aprNode.SetAttribute("confidence", apr.Confidence.ToString());
+                        aprNode.SetAttribute("confidence", Helper.float2string(apr.Confidence));
                     }
                     emotion.AppendChild(aprNode);
                 });
@@ -885,7 +894,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     actNode.SetAttribute("name", act.Name);
                     if (act.Value != null)
                     {
-                        actNode.SetAttribute("value", act.Value.ToString());
+                        actNode.SetAttribute("value", Helper.float2string(act.Value));
                     } 
                     else if (act.Trace != null) 
                     {
@@ -895,7 +904,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (act.Confidence != null)
                     {
-                        actNode.SetAttribute("confidence", act.Confidence.ToString());
+                        actNode.SetAttribute("confidence", Helper.float2string(act.Confidence));
                     }
                     emotion.AppendChild(actNode);
                 });
