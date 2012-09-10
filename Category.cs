@@ -30,6 +30,7 @@ using System.Linq;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
+    //OPTIMIZE: add Equals
     public class Category : Part
     {
         /// <summary>

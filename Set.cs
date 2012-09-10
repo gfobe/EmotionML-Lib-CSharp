@@ -33,6 +33,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 {
     //OPTIMIZE: make searchable by name, so we can use emotion.Categories[categoryname].Confidence
     //OPTIMIZE: make possible Set<Part> partset = new Set<Category>(); (typs exception)
+    //OPTIMIZE: add Equals
     public class Set<Part> : List<Part>
     {
         protected Uri uri;

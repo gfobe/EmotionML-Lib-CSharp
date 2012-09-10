@@ -348,7 +348,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// compares this emotion with another for equality
         /// </summary>
         /// <param name="obj">object to compare with</param>
-        /// <param name="ignore">ignorations (supported: info)</param>
+        /// <param name="ignore">ignorations (supported: info, id)</param>
         /// <returns>objects are equal</returns>
         public bool Equals(object obj, string[] ignore)
         {
@@ -376,21 +376,33 @@ namespace Vsr.Hawaii.EmotionmlLib
                     return false;
                 }
             }
-
-            if (this.category.Equals(control.Categories)
-            && this.dimension.Equals(control.Dimensions)
-            && this.appraisal.Equals(control.Appraisals)
-            && this.actionTendency.Equals(control.ActionTendencies)
-            && this.version == control.Version
-            && this.id == control.Id
-            && this.start == control.Start
-            && this.end == control.End
-            && this.duration == control.Duration
-            && this.timeRefUri.AbsoluteUri == control.TimeRefUri.AbsoluteUri
-            && this.timeRefAnchorPoint == control.TimeRefAnchorPoint
-            && this.offsetToStart == control.OffsetToStart
-            && this.expressedThrough == control.ExpressedThrough)
+            if (!ignore.Contains<string>("id"))
             {
+                if (this.id == control.Id)
+                {
+                    return false;
+                }
+            }
+
+            if (this.Version == control.Version
+            && this.Start == control.Start
+            && this.End == control.End
+            && this.Duration == control.Duration
+            && this.TimeRefAnchorPoint == control.TimeRefAnchorPoint
+            && this.OffsetToStart == control.OffsetToStart
+            && this.ExpressedThrough == control.ExpressedThrough)
+            {
+                if (this.TimeRefUri != null) 
+                {
+                    if (control.TimeRefUri != null) 
+                    {
+                        if (this.TimeRefUri.AbsoluteUri != control.TimeRefUri.AbsoluteUri)
+                        {
+                            return false;
+                        }
+                    }
+                }
+
                 //control references
                 if (this.references.Count != control.References.Count)
                 {
@@ -418,21 +430,42 @@ namespace Vsr.Hawaii.EmotionmlLib
                 }
 
                 //control sets
-                if (this.category.Uri.AbsoluteUri != control.Categories.Uri.AbsoluteUri)
-                {
-                    return false;
+                if (this.Categories.Uri != null) {
+                    if(control.Categories.Uri != null) {
+                        if(this.Categories.Uri.AbsoluteUri != control.Categories.Uri.AbsoluteUri) {
+                            return false;
+                        }
+                    }
                 }
-                if (this.dimension.Uri.AbsoluteUri != control.Dimensions.Uri.AbsoluteUri)
+                if (this.Dimensions.Uri != null)
                 {
-                    return false;
+                    if (control.Dimensions.Uri != null)
+                    {
+                        if (this.Dimensions.Uri.AbsoluteUri != control.Dimensions.Uri.AbsoluteUri)
+                        {
+                            return false;
+                        }
+                    }
                 }
-                if (this.appraisal.Uri.AbsoluteUri != control.Appraisals.Uri.AbsoluteUri)
+                if (this.Appraisals.Uri != null)
                 {
-                    return false;
+                    if (control.Appraisals.Uri != null)
+                    {
+                        if (this.Appraisals.Uri.AbsoluteUri != control.Appraisals.Uri.AbsoluteUri)
+                        {
+                            return false;
+                        }
+                    }
                 }
-                if (this.actionTendency.Uri.AbsoluteUri != control.ActionTendencies.Uri.AbsoluteUri)
+                if (this.ActionTendencies.Uri != null)
                 {
-                    return false;
+                    if (control.ActionTendencies.Uri != null)
+                    {
+                        if (this.ActionTendencies.Uri.AbsoluteUri != control.ActionTendencies.Uri.AbsoluteUri)
+                        {
+                            return false;
+                        }
+                    }
                 }
 
                 //control categories
@@ -445,7 +478,10 @@ namespace Vsr.Hawaii.EmotionmlLib
                     bool continueIteration = false;
                     foreach (Category controlItem in control.Categories)
                     {
-                        if (thisItem.Equals(controlItem))
+                        if(thisItem.Name == controlItem.Name
+                        && thisItem.Value == controlItem.Value
+                        && thisItem.Confidence == controlItem.Confidence
+                        && thisItem.Trace == controlItem.Trace) 
                         {
                             continueIteration = true;
                             break;
@@ -471,7 +507,10 @@ namespace Vsr.Hawaii.EmotionmlLib
                     bool continueIteration = false;
                     foreach (Dimension controlItem in control.Dimensions)
                     {
-                        if (thisItem.Equals(controlItem))
+                        if (thisItem.Name == controlItem.Name
+                        && thisItem.Value == controlItem.Value
+                        && thisItem.Confidence == controlItem.Confidence
+                        && thisItem.Trace == controlItem.Trace)
                         {
                             continueIteration = true;
                             break;
@@ -497,7 +536,10 @@ namespace Vsr.Hawaii.EmotionmlLib
                     bool continueIteration = false;
                     foreach (Appraisal controlItem in control.Appraisals)
                     {
-                        if (thisItem.Equals(controlItem))
+                        if (thisItem.Name == controlItem.Name
+                        && thisItem.Value == controlItem.Value
+                        && thisItem.Confidence == controlItem.Confidence
+                        && thisItem.Trace == controlItem.Trace)
                         {
                             continueIteration = true;
                             break;
@@ -523,7 +565,10 @@ namespace Vsr.Hawaii.EmotionmlLib
                     bool continueIteration = false;
                     foreach (ActionTendency controlItem in control.ActionTendencies)
                     {
-                        if (thisItem.Equals(controlItem))
+                        if (thisItem.Name == controlItem.Name
+                        && thisItem.Value == controlItem.Value
+                        && thisItem.Confidence == controlItem.Confidence
+                        && thisItem.Trace == controlItem.Trace)
                         {
                             continueIteration = true;
                             break;
