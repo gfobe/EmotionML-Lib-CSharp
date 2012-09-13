@@ -44,11 +44,6 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// </summary>
         string id = null;
 
-        /// <summary>
-        /// plaintext for <info/>
-        /// </summary>
-        string plaintext = null;
-
         public Info()
         {
             content = null;
@@ -75,12 +70,6 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public string Plaintext
-        {
-            get { return plaintext; }
-            set { plaintext = value; }
-        }
-
 
         public override bool Equals(object obj)
         {
@@ -95,8 +84,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 
             Info control = (Info)obj;
             if (this.content.ToString() == control.Content.ToString()
-            && this.id == control.Id
-            && this.plaintext == control.Plaintext)
+            && this.id == control.Id)
             {
                 return true;
             }
@@ -125,10 +113,6 @@ namespace Vsr.Hawaii.EmotionmlLib
             {
                 XmlNode importedNode = info.ImportNode(infoContent, true);
                 infoTag.AppendChild(importedNode);
-            }
-            if (plaintext != null)
-            {
-                infoTag.AppendChild(info.CreateTextNode(plaintext));
             }
 
             info.AppendChild(infoTag);
