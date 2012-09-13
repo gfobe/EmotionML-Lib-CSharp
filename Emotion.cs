@@ -31,7 +31,6 @@ using System.Xml;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    //FIXME: bei W3C nachfragen: Attribut time-ref-anchor-point hat default bei start, aber start selbst hat kein default und kann angegeben werden
     public class Emotion
     {
         // defined entries for attribute expressed-throught in EmotionML, but also other are possible
@@ -105,16 +104,16 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// denote the starting time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
         /// </summary>
-        protected int? start = null;
+        protected long? start = null;
         /// <summary>
         /// denote the ending time of emotion
         /// milliseconds since 1970-01-01 0:00:00 GMT (xsd:nonNegativeInteger)
         /// </summary>
-        protected int? end = null;
+        protected long? end = null;
         /// <summary>
         /// duration of the event in milliseconds (xsd:nonNegativeInteger)
         /// </summary>
-        protected int? duration = null;
+        protected long? duration = null;
 
         /* # relative times # */
 
@@ -125,11 +124,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <summary>
         /// indicates from wich time the relative time is measured (start=default or end)
         /// </summary>
-        protected int? timeRefAnchorPoint = null;
+        protected long? timeRefAnchorPoint = null;
         /// <summary>
         /// offset in milliseconds for the start of input from the anchor point
         /// </summary>
-        protected int? offsetToStart = null;
+        protected long? offsetToStart = null;
 
         /* # other # */
         /// <summary>
@@ -221,7 +220,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public int? Start
+        public long? Start
         {
             get { return start; }
             set
@@ -241,7 +240,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public int? End
+        public long? End
         {
             get { return end; }
             set
@@ -261,7 +260,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public int? Duration
+        public long? Duration
         {
             get { return duration; }
             set
@@ -280,7 +279,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             set { timeRefUri = value; }
         }
 
-        public int? TimeRefAnchorPoint
+        public long? TimeRefAnchorPoint
         {
             get {
                 if (null == timeRefAnchorPoint)
@@ -300,7 +299,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public int? OffsetToStart
+        public long? OffsetToStart
         {
             get
             {
@@ -853,6 +852,30 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (expressedThrough != null)
             {
                 emotion.SetAttribute("expressed-through", expressedThrough);
+            }
+            if (start != null)
+            {
+                emotion.SetAttribute("start", start.ToString());
+            }
+            if (end != null)
+            {
+                emotion.SetAttribute("end", end.ToString());
+            }
+            if (duration != null)
+            {
+                emotion.SetAttribute("duration", duration.ToString());
+            }
+            if (timeRefUri != null)
+            {
+                emotion.SetAttribute("time-ref-uri", timeRefUri.ToString());
+            }
+            if (timeRefAnchorPoint != null)
+            {
+                emotion.SetAttribute("time-ref-anchor-point", timeRefAnchorPoint.ToString());
+            }
+            if (offsetToStart != null)
+            {
+                emotion.SetAttribute("offset-to-start", offsetToStart.ToString());
             }
 
             //loop trought <category>
