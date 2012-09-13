@@ -122,14 +122,14 @@ namespace Vsr.Hawaii.EmotionmlLib
             XmlDocument reference = new XmlDocument();
 
             XmlElement referenceTag = reference.CreateElement("reference");
-            referenceTag.AppendChild(createAttributeWithValue(reference, "uri", uri.ToString()));
+            referenceTag.Attributes.Append(createAttributeWithValue(reference, "uri", uri.ToString()));
             if (role != null)
             {
-                referenceTag.AppendChild(createAttributeWithValue(reference, "role", role));
+                referenceTag.Attributes.Append(createAttributeWithValue(reference, "role", role));
             }
             if (mediaType != null)
             {
-                referenceTag.AppendChild(createAttributeWithValue(reference, "media-type", mediaType));
+                referenceTag.Attributes.Append(createAttributeWithValue(reference, "media-type", mediaType));
             }
 
             reference.AppendChild(referenceTag);
