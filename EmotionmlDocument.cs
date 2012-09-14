@@ -354,7 +354,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 
             if (plaintext != null)
             {
-                emotionmlXml.AppendChild(emotionmlXml.CreateTextNode(plaintext));
+                emotionmlXml.DocumentElement.AppendChild(emotionmlXml.CreateTextNode(plaintext));
             }
 
             //TODO: validate against scheme (as static method)
