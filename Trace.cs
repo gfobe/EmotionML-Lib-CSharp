@@ -107,7 +107,8 @@ namespace Vsr.Hawaii.EmotionmlLib
                 throw new EmotionMLException("illegal format of frequency string");
             }
 
-            this.Frequency = double.Parse(matches.GetEnumerator().Current.ToString());
+            string number = matches[0].Groups[1].Value;
+            this.Frequency = double.Parse(number, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
         }
 
         /// <summary>
@@ -152,8 +153,8 @@ namespace Vsr.Hawaii.EmotionmlLib
             XmlDocument trace = new XmlDocument();
 
             XmlElement traceTag = trace.CreateElement("trace");
-            traceTag.AppendChild(createAttributeWithValue(trace, "freq", getFrequency()));
-            traceTag.AppendChild(createAttributeWithValue(trace, "samples", samples));
+            traceTag.Attributes.Append(createAttributeWithValue(trace, "freq", getFrequency()));
+            traceTag.Attributes.Append(createAttributeWithValue(trace, "samples", samples));
             trace.AppendChild(traceTag);
 
             return trace;
