@@ -346,6 +346,40 @@ namespace Vsr.Hawaii.EmotionmlLib
                 {
                     importedNode.RemoveAttribute("xmlns");
                 }
+                //remove version if available
+                if (importedNode.Attributes["version"] != null)
+                {
+                    importedNode.RemoveAttribute("version");
+                }
+                //remove sets if available
+                if (importedNode.Attributes["category-set"] != null && categorySet != null)
+                {
+                    if (importedNode.Attributes["category-set"].InnerText == categorySet.ToString())
+                    {
+                        importedNode.RemoveAttribute("category-set");
+                    }
+                }
+                if (importedNode.Attributes["dimension-set"] != null && dimensionSet != null)
+                {
+                    if (importedNode.Attributes["dimension-set"].InnerText == dimensionSet.ToString())
+                    {
+                        importedNode.RemoveAttribute("dimension-set");
+                    }
+                }
+                if (importedNode.Attributes["appraisal-set"] != null && appraisalSet != null)
+                {
+                    if (importedNode.Attributes["appraisal-set"].InnerText == appraisalSet.ToString())
+                    {
+                        importedNode.RemoveAttribute("appraisal-set");
+                    }
+                }
+                if (importedNode.Attributes["action-tendency-set"] != null && actionTendencySet != null)
+                {
+                    if (importedNode.Attributes["action-tendency-set"].InnerText == actionTendencySet.ToString())
+                    {
+                        importedNode.RemoveAttribute("action-tendency-set");
+                    }
+                }
 
                 emotionml.AppendChild(importedNode);
             }
@@ -381,6 +415,4 @@ namespace Vsr.Hawaii.EmotionmlLib
             return output + ToXml();
         }
     }
-
-        //TODO: wenn wir hier emotion sets haben, brauchen die nicht mehr im emotion-bereich drin sein, ebenso version
 }
