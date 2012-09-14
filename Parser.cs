@@ -64,25 +64,51 @@ namespace Vsr.Hawaii.EmotionmlLib
             parse();
         }
 
+        /// <summary>
+        /// the whole parsed EmotionML instance
+        /// </summary>
+        /// <returns>EmotionML object</returns>
         public EmotionMLDocument getEmotionMLDocument()
         {
             return emotionml;
         }
 
+        /// <summary>
+        /// list of all parsed emotions
+        /// </summary>
+        /// <returns>list of emotion instances</returns>
         public List<Emotion> getEmotions()
         {
             return emotionml.Emotions;
         }
 
+        /// <summary>
+        /// list of all parsed vocabularies
+        /// </summary>
+        /// <returns></returns>
         public List<Vocabulary> getVocabularies()
         {
             return emotionml.Vocabularies;
         }
 
+        /// <summary>
+        /// just a single parsed emotion
+        /// </summary>
+        /// <returns>emotion instance</returns>
         public Emotion getSingleEmotion()
         {
             return emotionml.Emotions.First<Emotion>();
         }
+
+        /// <summary>
+        /// just a single parsed vocabulary
+        /// </summary>
+        /// <returns>vocabulary instance</returns>
+        public Vocabulary getSingleVocabulary()
+        {
+            return emotionml.Vocabularies.First<Vocabulary>();
+        }
+
 
         /// <summary>
         /// parses the whole staff of EmotionML
