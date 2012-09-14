@@ -442,7 +442,21 @@ namespace Vsr.Hawaii.EmotionmlLib
                         categoryConfidence = Helper.string2double(cat.Attributes["confidence"].InnerText);
                     }
 
-                    categories.Add(new Category(categoryName, categoryValue, categoryConfidence));
+                    Category newCategory = new Category(categoryName, categoryValue, categoryConfidence);
+
+                    //trace
+                    XmlNodeList trace = cat.SelectNodes("emo:trace", nsManager);
+                    if (trace.Count == 1)
+                    {
+                        newCategory.Trace = parseTrace(trace[0]);
+                    }
+                    else if (trace.Count > 1)
+                    {
+                        throw new EmotionMLException("Only one trace is allowed in category " + categoryName);
+                    }
+
+                    //add category to list
+                    categories.Add(newCategory);
                 }
 
                 emotion.Categories = categories;
@@ -469,7 +483,20 @@ namespace Vsr.Hawaii.EmotionmlLib
                         dimensionConfidence = Helper.string2double(dim.Attributes["confidence"].InnerText);
                     }
 
-                    dimensions.Add(new Dimension(dimensionName, dimensionValue, dimensionConfidence));
+                    Dimension newDimension = new Dimension(dimensionName, dimensionValue, dimensionConfidence);
+
+                    //trace
+                    XmlNodeList trace = dim.SelectNodes("emo:trace", nsManager);
+                    if (trace.Count == 1)
+                    {
+                        newDimension.Trace = parseTrace(trace[0]);
+                    }
+                    else if (trace.Count > 1)
+                    {
+                        throw new EmotionMLException("Only one trace is allowed in dimension " + dimensionName);
+                    }
+
+                    dimensions.Add(newDimension);
                 }
 
                 emotion.Dimensions = dimensions;
@@ -496,7 +523,20 @@ namespace Vsr.Hawaii.EmotionmlLib
                         appraisalConfidence = Helper.string2double(apr.Attributes["confidence"].InnerText);
                     }
 
-                    appraisals.Add(new Appraisal(appraisalName, appraisalValue, appraisalConfidence));
+                    Appraisal newAppraisal = new Appraisal(appraisalName, appraisalValue, appraisalConfidence);
+
+                    //trace
+                    XmlNodeList trace = apr.SelectNodes("emo:trace", nsManager);
+                    if (trace.Count == 1)
+                    {
+                        newAppraisal.Trace = parseTrace(trace[0]);
+                    }
+                    else if (trace.Count > 1)
+                    {
+                        throw new EmotionMLException("Only one trace is allowed in appraisal " + appraisalName);
+                    }
+
+                    appraisals.Add(newAppraisal);
                 }
 
                 emotion.Appraisals = appraisals;
@@ -523,7 +563,20 @@ namespace Vsr.Hawaii.EmotionmlLib
                         actionTendencyConfidence = Helper.string2double(act.Attributes["confidence"].InnerText);
                     }
 
-                    actionTendencies.Add(new ActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence));
+                    ActionTendency newActionTendency = new ActionTendency(actionTendencyName, actionTendencyValue, actionTendencyConfidence);
+
+                    //trace
+                    XmlNodeList trace = act.SelectNodes("emo:trace", nsManager);
+                    if (trace.Count == 1)
+                    {
+                        newActionTendency.Trace = parseTrace(trace[0]);
+                    }
+                    else if (trace.Count > 1)
+                    {
+                        throw new EmotionMLException("Only one trace is allowed in action tendency " + actionTendencyName);
+                    }
+
+                    actionTendencies.Add(newActionTendency);
                 }
 
                 emotion.ActionTendencies = actionTendencies;
@@ -562,16 +615,21 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
-        /// parse <trace/> element
+        /// parses the <trace/> section
         /// </summary>
-        /// <param name="traceNode">XMLNode oder <trace/></param>
+        /// <param name="traceNode">XML node of <trace/></param>
         /// <returns>Trace object</returns>
         protected Trace parseTrace(XmlNode traceNode)
         {
-            string samples = traceNode.Attributes["samples"].Value;
-            //FIXME: Parse Hz
-            double frequency = Helper.string2double(traceNode.Attributes["freq"].Value);
-            return new Trace(frequency, samples);
+            if (null == traceNode.Attributes["freq"] || null == traceNode.Attributes["samples"])
+            {
+                throw new EmotionMLException("A trace must have both, a frequence and samples");
+            }
+
+            return new Trace(
+                traceNode.Attributes["freq"].InnerText,
+                traceNode.Attributes["samples"].InnerText
+            );
         }
 
         /// <summary>
