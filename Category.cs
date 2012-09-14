@@ -45,10 +45,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         public Category(string name) : base(name)
         {}
 
-        public Category(string name, float? value) : base(name, value)
+        public Category(string name, double? value) : base(name, value)
         {}
 
-        public Category(string name, float? value, float? confidence) : base (name, value, confidence)
+        public Category(string name, double? value, double? confidence) : base (name, value, confidence)
         {}
     }
 }

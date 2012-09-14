@@ -40,10 +40,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         public ActionTendency(string name) : base(name)
         {}
 
-        public ActionTendency(string name, float? value) : base(name, value)
+        public ActionTendency(string name, double? value) : base(name, value)
         {}
 
-        public ActionTendency(string name, float? value, float? confidence) : base (name, value, confidence)
+        public ActionTendency(string name, double? value, double? confidence) : base (name, value, confidence)
         {}
     }
 }

@@ -150,11 +150,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
-        /// converts float to string without localisation
+        /// converts double to string without localisation
         /// </summary>
-        /// <param name="number">float</param>
+        /// <param name="number">double</param>
         /// <returns>string</returns>
-        public static string float2string(float number)
+        public static string double2string(double number)
         {
             if (null == number)
             {
@@ -165,11 +165,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
-        /// usupport null
+        /// support null for double2string()
         /// </summary>
-        /// <param name="number"></param>
-        /// <returns></returns>
-        public static string float2string(float? number)
+        /// <param name="number">double</param>
+        /// <returns>string</returns>
+        public static string double2string(double? number)
         {
             if (null == number)
             {
@@ -177,18 +177,18 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                return float2string((float)number);
+                return double2string((double)number);
             }
         }
 
         /// <summary>
-        /// converts a string to float without localisation
+        /// converts a string to double without localisation
         /// </summary>
         /// <param name="number">string</param>
-        /// <returns>float</returns>
-        public static float string2float(string number)
+        /// <returns>double</returns>
+        public static double string2double(string number)
         {
-            return float.Parse(number, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+            return double.Parse(number, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
         }
     }
 }

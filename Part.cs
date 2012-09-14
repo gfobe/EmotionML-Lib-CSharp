@@ -48,11 +48,11 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// the value [0.0, 1.0]
         /// dimension MUST have a value or a trace, the other MAY //TODO:
         /// </summary>
-        protected float? value = null;
+        protected double? value = null;
         /// <summary>
         /// confidence when we recognise the emotion [0.0, 1.0]
         /// </summary>
-        protected float? confidence = null;
+        protected double? confidence = null;
         /// <summary>
         /// trace if we want have a value over time
         /// </summary>
@@ -66,13 +66,13 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         //OPTIMIZE: shorter with :this(name)
-        public Part(string name, float? value)
+        public Part(string name, double? value)
         {
             this.name = name;
             this.value = value;
         }
 
-        public Part(string name, float? value, float? confidence)
+        public Part(string name, double? value, double? confidence)
         {
             this.name = name;
             this.value = value;
@@ -94,7 +94,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public float? Value
+        public double? Value
         {
             get { return this.value; }
             set {
@@ -112,7 +112,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
         }
 
-        public float? Confidence
+        public double? Confidence
         {
             get { return confidence; }
             set {

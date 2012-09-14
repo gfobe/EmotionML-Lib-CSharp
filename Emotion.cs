@@ -887,7 +887,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     catNode.SetAttribute("name", cat.Name);
                     if (cat.Value != null)
                     {
-                        catNode.SetAttribute("value", Helper.float2string(cat.Value));
+                        catNode.SetAttribute("value", Helper.double2string(cat.Value));
                     }
                     else if (cat.Trace != null)
                     {
@@ -896,7 +896,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (cat.Confidence != null)
                     {
-                        catNode.SetAttribute("confidence", Helper.float2string(cat.Confidence));
+                        catNode.SetAttribute("confidence", Helper.double2string(cat.Confidence));
                     }
                     emotion.AppendChild(catNode);
                 };
@@ -912,7 +912,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     dimNode.SetAttribute("name", dim.Name);
                     if (dim.Value != null)
                     {
-                        dimNode.SetAttribute("value", Helper.float2string(dim.Value));
+                        dimNode.SetAttribute("value", Helper.double2string(dim.Value));
                     }
                     else if (dim.Trace != null)
                     {
@@ -921,7 +921,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (dim.Confidence != null)
                     {
-                        dimNode.SetAttribute("confidence", Helper.float2string(dim.Confidence));
+                        dimNode.SetAttribute("confidence", Helper.double2string(dim.Confidence));
                     }
                     emotion.AppendChild(dimNode);
                 });
@@ -937,7 +937,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     aprNode.SetAttribute("name", apr.Name);
                     if (apr.Value != null)
                     {
-                        aprNode.SetAttribute("value", Helper.float2string(apr.Value));
+                        aprNode.SetAttribute("value", Helper.double2string(apr.Value));
                     }
                     else if (apr.Trace != null)
                     {
@@ -946,7 +946,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     }
                     if (apr.Confidence != null)
                     {
-                        aprNode.SetAttribute("confidence", Helper.float2string(apr.Confidence));
+                        aprNode.SetAttribute("confidence", Helper.double2string(apr.Confidence));
                     }
                     emotion.AppendChild(aprNode);
                 });
@@ -962,7 +962,7 @@ namespace Vsr.Hawaii.EmotionmlLib
                     actNode.SetAttribute("name", act.Name);
                     if (act.Value != null)
                     {
-                        actNode.SetAttribute("value", Helper.float2string(act.Value));
+                        actNode.SetAttribute("value", Helper.double2string(act.Value));
                     } 
                     else if (act.Trace != null) 
                     {
@@ -972,7 +972,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 
                     if (act.Confidence != null)
                     {
-                        actNode.SetAttribute("confidence", Helper.float2string(act.Confidence));
+                        actNode.SetAttribute("confidence", Helper.double2string(act.Confidence));
                     }
                     emotion.AppendChild(actNode);
                 });

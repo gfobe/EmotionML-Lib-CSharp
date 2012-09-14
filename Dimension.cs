@@ -40,7 +40,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         public const string DIMENSION_INTENSITY = "http://www.w3.org/TR/emotion-voc/xml#intensity-dimension";
 
 
-        public new float? Value
+        public new double? Value
         {
             get { return this.value; }
             set
@@ -81,10 +81,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         public Dimension(string name) : base(name)
         {}
 
-        public Dimension(string name, float? value) : base(name, value)
+        public Dimension(string name, double? value) : base(name, value)
         {}
 
-        public Dimension(string name, float? value, float? confidence) : base (name, value, confidence)
+        public Dimension(string name, double? value, double? confidence) : base (name, value, confidence)
         {}       
     }
 }

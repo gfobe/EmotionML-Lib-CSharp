@@ -42,10 +42,10 @@ namespace Vsr.Hawaii.EmotionmlLib
         public Appraisal(string name) : base(name)
         {}
 
-        public Appraisal(string name, float? value) : base(name, value)
+        public Appraisal(string name, double? value) : base(name, value)
         {}
 
-        public Appraisal(string name, float? value, float? confidence) : base (name, value, confidence)
+        public Appraisal(string name, double? value, double? confidence) : base (name, value, confidence)
         {}
     }
 }
