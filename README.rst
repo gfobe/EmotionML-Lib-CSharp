@@ -13,43 +13,50 @@ Parsing of EmotionML
 ^^^^^^^^^^^^^^^^^^^^
 You can parse a whole EmotionML document or only parts of it with the build in EmotionML parser.
 
-Load by XmlDocument:
+Load by XmlDocument::
 
     XmlDocument emotionmlDoc = new XmlDocument();
     emotionmlDoc.Load("your.emotionml");
     Parser emotionmlParser = new Parser(emotionmlDoc);
 
-Load by string:
+	
+Load by string::
 
     Parser emotionmlParser = new Parser(emotionmlString);
 
+
 After that you can access the parts of EmotionML document you need.
 
-Whole EmotionML document:
+Whole EmotionML document::
 
     EmotionMLDocument emotionmlDoc = emotionmlParser.getEmotionMLDocument();
 
-List of emotions:
+	
+List of emotions::
 
     List<Emotion> emotionList = emotionmlParser.getEmotions();
 
-Single emotion:
+	
+Single emotion::
 
     Emotion emotion = emotionmlParser.getSingleEmotion();
 
-List of vocabularies:
+	
+List of vocabularies::
 
     List<Vocabulary> vocabularyList = emotionmlParser.getVocabularies();
 
-Single vocabulary:
+	
+Single vocabulary::
 
     Vocabulary vocabulary = emotionmlParser.getSingleVocabulary();
 
+	
 Creating EmotionML
 ^^^^^^^^^^^^^^^^^^
 You can create XmlDocument instances with the method *ToDom()* and XML with the method *ToXml()*.
 
-Add some emotions to an EmotionML document and output it as XML:
+Add some emotions to an EmotionML document and output it as XML::
 
    EmotionMLDocument emodoc = new EmotionMLDocument();
    emodoc.addEmotion(emotion1);
@@ -57,9 +64,11 @@ Add some emotions to an EmotionML document and output it as XML:
    
    Console.Write(emodoc.ToXml());
 
-Output single emotion as XmlDocument: 
+   
+Output single emotion as XmlDocument::
 
    emotion1.ToDom();
+   
 
 Internal structures
 -------------------
