@@ -32,11 +32,15 @@ using System.Xml;
 using System.Xml.Schema;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
     public class Helper
     {
+        /// <summary>
+        /// XML Schema template to validate some special types
+        /// </summary>
         private const string schemaTemplate = @"<?xml version=""1.0"" encoding=""utf-8""?>
             <xsd:schema xmlns:xsd=""http://www.w3.org/2001/XMLSchema""
                 elementFormDefault=""qualified"" attributeFormDefault=""unqualified"">
@@ -46,9 +50,13 @@ namespace Vsr.Hawaii.EmotionmlLib
              </xsd:schema>
         ";
 
+        /// <summary>
+        /// XML template to validate some special things
+        /// </summary>
         private const string xmlTemplate = @"<?xml version=""1.0"" encoding=""utf-8""?>
             <validating>{0}</validating>
         ";
+
 
         /// <summary>
         /// validate a string against xsd:ID
@@ -189,6 +197,53 @@ namespace Vsr.Hawaii.EmotionmlLib
         public static double string2double(string number)
         {
             return double.Parse(number, System.Globalization.CultureInfo.InvariantCulture.NumberFormat);
+        }
+
+        /// <summary>
+        /// checks if string can be a valid MIME-Type
+        /// </summary>
+        /// <param name="mediaTypeString">possible MIME-Type</param>
+        /// <returns>given can be a MIME-Type</returns>
+        public static bool isMediaType(string mediaTypeString)
+        {
+            Regex mimetypeRegEx = new Regex("^[a-z\\-+]+\\/[a-z\\-+]+$");
+
+            mediaTypeString = mediaTypeString.ToLower();
+
+            if (!mimetypeRegEx.IsMatch(mediaTypeString))
+            {
+                return false; //not in format type/subtype
+            }
+            
+            string[] parts = mediaTypeString.ToLower().Split('/');
+
+            // experimental type
+            if("x-" == parts[0].Substring(0,2)) {
+                return true;
+            }
+            // some registered type
+            switch (parts[0])
+            {
+                case "example":
+                    return true; //subtype does not matter
+                case "application":
+                case "audio":
+                case "image":
+                case "message":
+                case "model":
+                case "multipart":
+                case "text":
+                case "video":
+                    // experimental subtype
+                    if ("x-" == parts[1].Substring(0, 2))
+                    {
+                        return true;
+                    }
+                    //OPTIMIZE: check all the subtypes - but how?
+                    return true;
+            }
+
+            return false;
         }
     }
 }

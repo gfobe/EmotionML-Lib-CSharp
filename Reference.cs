@@ -41,7 +41,7 @@ namespace Vsr.Hawaii.EmotionmlLib
 
         protected Uri uri = null;
         protected string role = null;
-        protected string mediaType = null;  //TODO: validate media type
+        protected string mediaType = null;
 
         public Reference(Uri uri) {
             this.uri = uri;
@@ -85,7 +85,16 @@ namespace Vsr.Hawaii.EmotionmlLib
         public string MediaType
         {
             get { return mediaType; }
-            set { mediaType = value; }
+            set {
+                if (null == value || Helper.isMediaType(value))
+                {
+                    mediaType = value;
+                }
+                else
+                {
+                    throw new EmotionMLException('"' + value + "\" is no valid MIME type");
+                }
+            }
         }
 
 
