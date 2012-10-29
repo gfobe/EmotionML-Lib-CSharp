@@ -45,6 +45,7 @@
     <Compile Include="ActionTendency.cs" />
     <Compile Include="Appraisal.cs" />
     <Compile Include="Category.cs" />
+    <Compile Include="Cache.cs" />
     <Compile Include="Dimension.cs" />
     <Compile Include="EmotionMLException.cs" />
     <Compile Include="Helper.cs" />
