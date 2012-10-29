@@ -596,7 +596,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="newCategory">the values to set the category to</param>
         public void addCategory(Category newCategory)
         {
-            int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
+            int foundOnIndex = category.FindIndex(delegate(Part categoryToMatch)
             {
                 return categoryToMatch.Name== newCategory.Name;
             });
@@ -617,7 +617,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="categoryName">the name of the category to delete</param>
         /// <returns>deletion succeded</returns>
         public bool deleteCategory(string categoryName) {
-            int foundOnIndex = category.FindIndex(delegate(Category categoryToMatch)
+            int foundOnIndex = category.FindIndex(delegate(Part categoryToMatch)
             {
                 return categoryToMatch.Name == categoryName;
             });
@@ -639,7 +639,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="newDimension">the values to set the dimension to</param>
         public void addDimension(Dimension newDimension)
         {
-            int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
+            int foundOnIndex = dimension.FindIndex(delegate(Part dimensionToMatch)
             {
                 return dimensionToMatch.Name == newDimension.Name;
             });
@@ -661,7 +661,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>deletion succeded</returns>
         public bool deleteDimension(string dimensionName)
         {
-            int foundOnIndex = dimension.FindIndex(delegate(Dimension dimensionToMatch)
+            int foundOnIndex = dimension.FindIndex(delegate(Part dimensionToMatch)
             {
                 return dimensionToMatch.Name == dimensionName;
             });
@@ -683,7 +683,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="newappraisal">the values to set the appraisal to</param>
         public void addAppraisal(Appraisal newAppraisal)
         {
-            int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
+            int foundOnIndex = appraisal.FindIndex(delegate(Part appraisalToMatch)
             {
                 return appraisalToMatch.Name == newAppraisal.Name;
             });
@@ -705,7 +705,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>deletion succeded</returns>
         public bool deleteAppraisal(string appraisalName)
         {
-            int foundOnIndex = appraisal.FindIndex(delegate(Appraisal appraisalToMatch)
+            int foundOnIndex = appraisal.FindIndex(delegate(Part appraisalToMatch)
             {
                 return appraisalToMatch.Name == appraisalName;
             });
@@ -727,7 +727,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="newactionTendency">the values to set the actionTendency to</param>
         public void addActionTendency(ActionTendency newactionTendency)
         {
-            int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
+            int foundOnIndex = actionTendency.FindIndex(delegate(Part actionTendencyToMatch)
             {
                 return actionTendencyToMatch.Name == newactionTendency.Name;
             });
@@ -749,7 +749,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <returns>deletion succeded</returns>
         public bool deleteActionTendency(string actionTendencyName)
         {
-            int foundOnIndex = actionTendency.FindIndex(delegate(ActionTendency actionTendencyToMatch)
+            int foundOnIndex = actionTendency.FindIndex(delegate(Part actionTendencyToMatch)
             {
                 return actionTendencyToMatch.Name == actionTendencyName;
             });
@@ -803,21 +803,21 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             //FIXME: merge sets also -> proplem: different sets
 
-            mergingEmotion.category.ForEach(delegate(Category cat)
+            mergingEmotion.category.ForEach(delegate(Part cat)
             {
-                addCategory(cat);
+                addCategory((Category)cat);
             });
-            mergingEmotion.dimension.ForEach(delegate(Dimension dim)
+            mergingEmotion.dimension.ForEach(delegate(Part dim)
             {
-                addDimension(dim);
+                addDimension((Dimension)dim);
             });
-            mergingEmotion.appraisal.ForEach(delegate(Appraisal apr)
+            mergingEmotion.appraisal.ForEach(delegate(Part apr)
             {
-                addAppraisal(apr);
+                addAppraisal((Appraisal)apr);
             });
-            mergingEmotion.actionTendency.ForEach(delegate(ActionTendency act)
+            mergingEmotion.actionTendency.ForEach(delegate(Part act)
             {
-                addActionTendency(act);
+                addActionTendency((ActionTendency)act);
             });
         }
 
@@ -906,7 +906,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (dimension.Count > 0)
             {
                 emotion.SetAttribute("dimension-set", dimension.Uri.AbsoluteUri);
-                dimension.ForEach(delegate(Dimension dim)
+                dimension.ForEach(delegate(Part dim)
                 {
                     XmlElement dimNode = emotionXml.CreateElement("dimension");
                     dimNode.SetAttribute("name", dim.Name);
@@ -931,7 +931,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (appraisal.Count > 0)
             {
                 emotion.SetAttribute("appraisal-set", appraisal.Uri.AbsoluteUri);
-                appraisal.ForEach(delegate(Appraisal apr)
+                appraisal.ForEach(delegate(Part apr)
                 {
                     XmlElement aprNode = emotionXml.CreateElement("appraisal");
                     aprNode.SetAttribute("name", apr.Name);
@@ -956,7 +956,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             if (actionTendency.Count > 0)
             {
                 emotion.SetAttribute("action-tendency-set", actionTendency.Uri.AbsoluteUri);
-                actionTendency.ForEach(delegate(ActionTendency act)
+                actionTendency.ForEach(delegate(Part act)
                 {
                     XmlElement actNode = emotionXml.CreateElement("action-tendency");
                     actNode.SetAttribute("name", act.Name);

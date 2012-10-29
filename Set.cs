@@ -33,15 +33,30 @@ namespace Vsr.Hawaii.EmotionmlLib
 {
     //OPTIMIZE: make searchable by name, so we can use emotion.Categories[categoryname].Confidence
     //OPTIMIZE: make possible Set<Part> partset = new Set<Category>(); (typs exception)
-    //OPTIMIZE: add Equals
-    public class Set<Part> : List<Part>
+    //TODO: add Equals
+    public class Set<T> : List<Part>
     {
+        /// <summary>
+        /// set URI
+        /// </summary>
         protected Uri uri;
+        /// <summary>
+        /// vocabulary with Items of set
+        /// </summary>
+        protected Vocabulary vocabulary = null;
+
     
-        public Uri Uri { 
+        public Uri Uri 
+        { 
             get { return uri; }
             set { uri = value; }
         }
+
+        public Vocabulary Vocabulary
+        {
+            get { return vocabulary; }
+        }
+
 
         public Set(Uri uri) : base()
         {
@@ -55,24 +70,81 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
+        /// adds item to list
+        /// </summary>
+        /// <param name="part">part to add to list</param>
+        public new void Add(Part part) {
+            if (vocabulary != null)
+            {
+                if (isInVocabulary(new Item(part.Name)))
+                {
+                    base.Add(part);
+                }
+            }
+        }
+
+        /// <summary>
+        /// looks if a item can be stored in this set
+        /// </summary>
+        /// <param name="item">item to test if it can be stored</param>
+        /// <returns>item can be stored in set</returns>
+        public bool isInVocabulary(Item item)
+        {
+            if (null == vocabulary)
+            {
+                return false;
+            }
+
+            foreach (Item testItem in vocabulary.Items)
+            {
+                if (item.Name == testItem.Name)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// searches entries in list by name
         /// </summary>
         /// <param name="valueName">name in the name-attribute</param>
         /// <returns>part of emotion or null if nothing found</returns>
-       /* public EmotionmlLib.Part searchByName(string valueName)
+        public Part searchByName(string valueName)
         {
-            int foundOnIndex = this.FindIndex(delegate(EmotionmlLib.Part controlPart)
+            int foundOnIndex = this.FindIndex(delegate(Part controlPart)
             {
                 return controlPart.Name == valueName;
             });
             if (foundOnIndex != -1)
             {
-                return (EmotionmlLib.Part)this.ElementAt(foundOnIndex);
+                return (Part)this.ElementAt(foundOnIndex);
             }
             else
             {
                 return null;
             }
-        }*/
+        }
+
+        /// <summary>
+        /// load vocabulary for set
+        /// </summary>
+        protected void loadVocabulary()
+        {
+            string vocabularyName = uri.Fragment;
+            string vocabularyUrl = uri.Scheme + ':' + uri.Host + uri.AbsolutePath;
+            List<Vocabulary> vocabularies = HelperVocabularycheck.loadVocabularyListFromUrl(new Uri(vocabularyUrl));
+
+            foreach (Vocabulary vocabulary in vocabularies)
+            {
+                if (vocabularyName == vocabulary.Id)
+                {
+                    this.vocabulary = vocabulary;
+                    return;
+                }
+            }
+
+            throw new EmotionMLException('"' + vocabularyName + "\" is not in vocabulary file \"" + vocabularyUrl + '"');
+        }
     }
 }

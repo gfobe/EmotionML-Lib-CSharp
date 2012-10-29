@@ -48,6 +48,7 @@
     <Compile Include="Dimension.cs" />
     <Compile Include="EmotionMLException.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="HelperVocabularycheck.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="EmotionML.cs" />
     <Compile Include="EmotionMLDocument.cs" />
