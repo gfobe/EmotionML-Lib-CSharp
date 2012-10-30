@@ -32,12 +32,17 @@ using System.Xml;
 using System.Xml.Schema;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using System.Net;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
     public class Helper
     {
+        /// <summary>
+        /// User agent given, when some other EmotionML (e.g. vocabulary, mimetypes) is crawled with this library
+        /// </summary>
+        public const string USER_AGENT = "EmotionML library for C# v" + EmotionML.LIBRARY_VERSION;
+
         /// <summary>
         /// XML Schema template to validate some special types
         /// </summary>
@@ -132,7 +137,8 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// </summary>
         /// <param name="resourceName">internal name of the resource</param>
         /// <returns>content of resource</returns>
-        public static string loadInternalResource(string resourceName) {
+        public static string loadInternalResource(string resourceName)
+        {
             //generate resource name
             Type mytype = typeof(Helper);
             string myNamespace = mytype.Namespace;
@@ -147,7 +153,7 @@ namespace Vsr.Hawaii.EmotionmlLib
             {
                 throw new EmotionMLException("Resource \"" + resourceName + "\" is not a internal resource of this library.");
             }
-            
+
             System.IO.Stream file = ownAssembly.GetManifestResourceStream(ressourceToLoad);
 
             //return it as normal string
@@ -200,50 +206,38 @@ namespace Vsr.Hawaii.EmotionmlLib
         }
 
         /// <summary>
-        /// checks if string can be a valid MIME-Type
+        /// do a GET request to an URL
         /// </summary>
-        /// <param name="mediaTypeString">possible MIME-Type</param>
-        /// <returns>given can be a MIME-Type</returns>
-        public static bool isMediaType(string mediaTypeString)
+        /// <param name="url">URL to call</param>
+        /// <param name="additionalHeaders">headers to send in request</param>
+        /// <returns>content of web document</returns>
+        public static string doGetRequest(Uri url, List<KeyValuePair<string, string>> additionalHeaders = null)
         {
-            Regex mimetypeRegEx = new Regex("^[a-z\\-+]+\\/[a-z\\-+]+$");
+            //init request
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.Method = "GET";
+            httpWebRequest.MediaType = "HTTP/1.1";
 
-            mediaTypeString = mediaTypeString.ToLower();
-
-            if (!mimetypeRegEx.IsMatch(mediaTypeString))
+            //define headers
+            httpWebRequest.UserAgent = Helper.USER_AGENT;
+            if (additionalHeaders != null)
             {
-                return false; //not in format type/subtype
-            }
-            
-            string[] parts = mediaTypeString.ToLower().Split('/');
-
-            // experimental type
-            if("x-" == parts[0].Substring(0,2)) {
-                return true;
-            }
-            // some registered type
-            switch (parts[0])
-            {
-                case "example":
-                    return true; //subtype does not matter
-                case "application":
-                case "audio":
-                case "image":
-                case "message":
-                case "model":
-                case "multipart":
-                case "text":
-                case "video":
-                    // experimental subtype
-                    if ("x-" == parts[1].Substring(0, 2))
-                    {
-                        return true;
-                    }
-                    //OPTIMIZE: check all the subtypes - but how?
-                    return true;
+                foreach (KeyValuePair<string, string> headerData in additionalHeaders)
+                {
+                    httpWebRequest.Headers.Add(headerData.Key, headerData.Value);
+                }
             }
 
-            return false;
+            //send request
+            HttpWebResponse httpWebesponse = (HttpWebResponse)httpWebRequest.GetResponse();
+
+            //receive response as UTF-8 string
+            Stream dataStream = httpWebesponse.GetResponseStream();
+            StreamReader streamreader = new StreamReader(dataStream, Encoding.UTF8);
+            string response = streamreader.ReadToEnd();
+            streamreader.Close();
+
+            return response;
         }
     }
 }

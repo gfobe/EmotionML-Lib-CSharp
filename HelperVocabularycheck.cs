@@ -36,11 +36,6 @@ namespace Vsr.Hawaii.EmotionmlLib
     class HelperVocabularycheck
     {
         /// <summary>
-        /// User agent given, when some other EmotionML (e.g. vocabulary) is crawled with this library
-        /// </summary>
-        public const string USER_AGENT = "EmotionML Library for C# v" + EmotionML.LIBRARY_VERSION;
-
-        /// <summary>
         /// enables caching when loading a vocabulary by URL (default = true)
         /// </summary>
         public static bool enableCaching = true;
@@ -76,23 +71,13 @@ namespace Vsr.Hawaii.EmotionmlLib
             }
             else
             {
-                //init request
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
+                List<KeyValuePair<string, string>> headers = new List<KeyValuePair<string, string>>();
+                headers.Add(
+                    // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
+                    new KeyValuePair<string, string>("Accept", EmotionML.MIME_TYPE)
+                );
 
-                //define headers
-                httpWebRequest.Method = "GET";
-                httpWebRequest.MediaType = "HTTP/1.1";
-                httpWebRequest.UserAgent = USER_AGENT;
-                httpWebRequest.Headers.Add("Accept", EmotionML.MIME_TYPE); //http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html
-
-                //send request
-                HttpWebResponse httpWebesponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                //receive response as UTF-8 string
-                Stream dataStream = httpWebesponse.GetResponseStream();
-                StreamReader streamreader = new StreamReader(dataStream, Encoding.UTF8);
-                emotionmlString = streamreader.ReadToEnd();
-                streamreader.Close();
+                emotionmlString = Helper.doGetRequest(uri);
             }
 
             //load vocabularies
