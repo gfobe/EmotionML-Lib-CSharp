@@ -64,7 +64,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\vocabularies.emotionml" />
+    <EmbeddedResource Include="resources\vocabularies.emotionml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="resources\emotionml-fragments.xsd">

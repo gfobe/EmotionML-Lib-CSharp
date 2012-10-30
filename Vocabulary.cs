@@ -196,7 +196,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// <param name="name">name of item</param>
         public void addItem(Item newItem) 
         {
-            if (items.Exists(delegate(Item existingItem)
+            if (!items.Exists(delegate(Item existingItem)
             {
                 return existingItem.Name == newItem.Name;
             }) )
