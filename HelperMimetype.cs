@@ -138,11 +138,6 @@ namespace Vsr.Hawaii.EmotionmlLib
             foreach (Match match in maintypeMatches)
             {
                 string mainTypeName = match.Groups[1].Value;
-                //on examples they have another link structure
-                if ("examples" == mainTypeName)
-                {
-                    mainTypeName = "example";
-                }
                 XmlElement mainType = xml.CreateElement(mainTypeName);
 
                 // search for subtypes of this main type
@@ -160,6 +155,11 @@ namespace Vsr.Hawaii.EmotionmlLib
                     XmlElement newType = xml.CreateElement("subtype");
                     newType.InnerText = subTypeName;
                     mainType.AppendChild(newType);
+                }
+                //on examples they have another link structure and so to have a little workaround
+                if ("examples" == mainTypeName)
+                {
+                    mainType = xml.CreateElement("example");
                 }
                 mimeTypes.AppendChild(mainType);
             }
