@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Vsr.Hawaii.EmotionmlLib
 {
-    class Cache
+    //TODO: remove public
+    public class HelperCache
     {
         /// <summary>
         /// default cachetime in seconds: 1 day (24 * 60 * 60)
@@ -21,6 +22,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         /// nothing exists = no lifetime end
         /// </summary>
         protected SortedList<string, DateTime> cacheLifetime = new SortedList<string, DateTime>();
+
 
         /// <summary>
         /// is cache is in time
