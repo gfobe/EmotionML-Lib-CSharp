@@ -45,10 +45,11 @@
     <Compile Include="ActionTendency.cs" />
     <Compile Include="Appraisal.cs" />
     <Compile Include="Category.cs" />
-    <Compile Include="Cache.cs" />
+    <Compile Include="HelperCache.cs" />
     <Compile Include="Dimension.cs" />
     <Compile Include="EmotionMLException.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="HelperMimetype.cs" />
     <Compile Include="HelperVocabularycheck.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="EmotionML.cs" />
@@ -72,6 +73,9 @@
     <EmbeddedResource Include="resources\emotionml.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="resources\mime-types.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

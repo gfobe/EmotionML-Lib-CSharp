@@ -86,7 +86,7 @@ namespace Vsr.Hawaii.EmotionmlLib
         {
             get { return mediaType; }
             set {
-                if (null == value || Helper.isMediaType(value))
+                if (null == value || HelperMimetype.isMediaType(value))
                 {
                     mediaType = value;
                 }
